@@ -1,0 +1,26 @@
+<div class="wrapper">
+  <mat-toolbar>
+    <span>Tables: {{ count() }}</span>
+
+    <button
+      mat-icon-button
+      aria-label="Add table button"
+      class="add-button"
+      (click)="onAddTable()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <span class="tables-toolbar-spacer"></span>
+
+    <button mat-icon-button aria-label="Example icon-button with share icon">
+      <mat-icon>share</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div class="tables-container">
+    @for (table of tables(); track table; let index = $index){
+    <app-table [tableNumber]="table.number" />
+    }
+  </div>
+</div>

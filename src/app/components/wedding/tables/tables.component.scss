@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+  }
+
+  .tables-container {
+    flex: 1 1 auto;
+    margin: 1rem;
+    border: dotted black 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+}
+
+.tables-toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.add-button {
+  margin-left: 1rem;
+}

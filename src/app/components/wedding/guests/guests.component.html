@@ -1,0 +1,19 @@
+<div
+  id="guest-list"
+  cdkDropList
+  [cdkDropListData]="guests()"
+  class="example-list"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (guest of guests(); track guest.id) {
+  <div
+    class="example-box"
+    cdkDrag
+    [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }"
+  >
+    {{ guest.name }}
+    <span *cdkDragPreview>{{ guest.initials }}</span>
+    <span *cdkDragPlaceholder>{{ guest.initials }}</span>
+  </div>
+  }
+</div>

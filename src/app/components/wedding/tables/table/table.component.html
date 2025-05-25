@@ -1,0 +1,41 @@
+<!-- <div class="table-container" cdkDragBoundary=".tables-container" cdkDrag> -->
+<div class="table-container">
+  <div class="table">
+    {{ tableNumber() }}
+    <button
+      mat-icon-button
+      aria-label="Add table button"
+      class="danger-button"
+      (click)="onDeleteTable()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+  @for(chair of chairs(); let index = $index; track index;){
+  <div class="chair" [style]="getTranform(index)">
+    <div
+      class="chair-pillow"
+      [style]="getReverseTranform(index)"
+      cdkDropList
+      [cdkDropListData]="chair"
+      (cdkDropListDropped)="drop($event, index)"
+      [cdkDropListEnterPredicate]="dropPredicate"
+      [attr.index]="index"
+    >
+      @for (guest of chair; track guest.id) {
+      <span
+        cdkDrag
+        [cdkDragData]="{
+          guest: guest,
+          tableNumber: tableNumber(),
+          chairIndex: index
+        }"
+        >{{ guest.initials }}
+        <span *cdkDragPlaceholder>{{ guest.initials }}</span>
+      </span>
+      }
+    </div>
+  </div>
+  }
+</div>
