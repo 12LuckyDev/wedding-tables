@@ -4,6 +4,7 @@ import { WeddingStore } from './wedding.store';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { GuestsComponent } from './guests/guests.component';
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { WeddingService } from './weddings.service';
 
 @Component({
   selector: 'app-wedding',
@@ -13,7 +14,7 @@ import { CdkDropListGroup } from '@angular/cdk/drag-drop';
     MatSidenavModule,
     CdkDropListGroup,
   ],
-  providers: [WeddingStore],
+  providers: [WeddingStore, WeddingService],
   templateUrl: './wedding.component.html',
   styleUrl: './wedding.component.scss',
 })

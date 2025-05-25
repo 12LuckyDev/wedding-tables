@@ -4,6 +4,7 @@
   [cdkDropListData]="guests()"
   class="example-list"
   (cdkDropListDropped)="drop($event)"
+  (cdkDropListEntered)="onListEntered()"
 >
   @for (guest of guests(); track guest.id) {
   <div
@@ -13,7 +14,13 @@
   >
     {{ guest.name }}
     <span *cdkDragPreview>{{ guest.initials }}</span>
-    <span *cdkDragPlaceholder>{{ guest.initials }}</span>
+    <ng-container *cdkDragPlaceholder>
+      @if(dragHoverType$ | async){
+      <span> {{ guest.initials }} </span>
+      } @else{
+      <div class="example-box">{{ guest.name }}</div>
+      }
+    </ng-container>
   </div>
   }
 </div>

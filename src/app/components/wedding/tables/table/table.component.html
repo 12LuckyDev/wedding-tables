@@ -19,8 +19,9 @@
       [style]="getReverseTranform(index)"
       cdkDropList
       [cdkDropListData]="chair"
-      (cdkDropListDropped)="drop($event, index)"
       [cdkDropListEnterPredicate]="dropPredicate"
+      (cdkDropListDropped)="drop($event, index)"
+      (cdkDropListEntered)="onListEntered()"
       [attr.index]="index"
     >
       @for (guest of chair; track guest.id) {
@@ -32,7 +33,13 @@
           chairIndex: index
         }"
         >{{ guest.initials }}
-        <span *cdkDragPlaceholder>{{ guest.initials }}</span>
+        <ng-container *cdkDragPlaceholder>
+          @if(dragHoverType$ | async){
+          <span> {{ guest.initials }} </span>
+          } @else{
+          <div class="example-box">{{ guest.name }}</div>
+          }
+        </ng-container>
       </span>
       }
     </div>

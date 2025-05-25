@@ -7,17 +7,31 @@ import {
   CdkDragPreview,
   CdkDragPlaceholder,
 } from '@angular/cdk/drag-drop';
+import { WeddingService } from '../weddings.service';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-guests',
-  imports: [CdkDropList, CdkDrag, CdkDragPreview, CdkDragPlaceholder],
+  imports: [
+    CdkDropList,
+    CdkDrag,
+    CdkDragPreview,
+    CdkDragPlaceholder,
+    AsyncPipe,
+  ],
   templateUrl: './guests.component.html',
   styleUrl: './guests.component.scss',
 })
 export class GuestsComponent {
   private readonly _weddingStore = inject(WeddingStore);
+  private readonly _weddingService = inject(WeddingService);
 
   public readonly guests: Signal<Guest[]> = this._weddingStore.guests;
+
+  public get dragHoverType$(): Observable<boolean> {
+    return this._weddingService.dragHoverType$;
+  }
 
   public drop(
     event: CdkDragDrop<
@@ -41,20 +55,9 @@ export class GuestsComponent {
         event.currentIndex
       );
     }
+  }
 
-    // if (event.previousContainer === event.container) {
-    //   moveItemInArray(
-    //     event.container.data,
-    //     event.previousIndex,
-    //     event.currentIndex
-    //   );
-    // } else {
-    //   transferArrayItem(
-    //     event.previousContainer.data,
-    //     event.container.data,
-    //     event.previousIndex,
-    //     event.currentIndex
-    //   );
-    // }
+  public onListEntered(): void {
+    this._weddingService.changeHoverType(false);
   }
 }

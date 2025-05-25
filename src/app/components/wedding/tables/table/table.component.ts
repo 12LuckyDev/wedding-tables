@@ -8,6 +8,9 @@ import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Guest, Table, WeddingStore } from '../../wedding.store';
+import { WeddingService } from '../../weddings.service';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-table',
@@ -17,12 +20,14 @@ import { Guest, Table, WeddingStore } from '../../wedding.store';
     CdkDrag,
     CdkDropList,
     CdkDragPlaceholder,
+    AsyncPipe,
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
 export class TableComponent {
   private readonly _weddingStore = inject(WeddingStore);
+  private readonly _weddingService = inject(WeddingService);
 
   public readonly tableNumber = input<number>();
   public readonly table: Signal<Table | null> = computed(
@@ -34,6 +39,10 @@ export class TableComponent {
   public readonly chairs: Signal<Guest[][]> = computed(() =>
     (this.table()?.chairs ?? []).map((guest) => (guest ? [guest] : []))
   );
+
+  public get dragHoverType$(): Observable<boolean> {
+    return this._weddingService.dragHoverType$;
+  }
 
   public onDeleteTable(): void {
     const tableNumber = this.tableNumber() ?? null;
@@ -95,5 +104,9 @@ export class TableComponent {
         previousChairIndex
       );
     }
+  }
+
+  public onListEntered(): void {
+    this._weddingService.changeHoverType(true);
   }
 }
