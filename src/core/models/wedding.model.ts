@@ -3,5 +3,6 @@ import { Table } from './table.model';
 
 export interface Wedding {
   tables: Table[];
+  allGuests: Guest[];
   guests: Guest[];
 }

@@ -15,6 +15,7 @@ const PEOPLE = [
   'Kingston Stokes',
   'Miranda Walls',
   'Larry Esquivel',
+  'Jan Kowalski',
 ];
 
 const addQuestToTable = (tables: Table[], guest: Guest, tableNumber: number, chairIndex: number): Table[] | null => {
@@ -42,6 +43,7 @@ export const WeddingStore = signalStore(
       { number: 2, size: 12, chairs: nMap(12, () => null) },
       { number: 3, size: 12, chairs: nMap(12, () => null) },
     ],
+    allGuests: PEOPLE.map((name) => new GuestModel(name)),
     guests: PEOPLE.map((name) => new GuestModel(name)),
   }),
   withMethods((state) => ({

@@ -1,19 +1,15 @@
-import { Guest, GuestModel } from '../models';
 import { readFileContent } from './read-file-content';
 
-export const readGuestFile = async (file: File): Promise<Guest[][]> => {
+export const readGuestFile = async (file: File): Promise<string[][]> => {
   const content = await readFileContent(file);
   const splited = content.split('\n');
 
-  const guests: Guest[][] = [];
+  const guests: string[][] = [];
   splited.forEach((row) => {
-    const rowGuests: Guest[] = [];
+    const guestsRow: string[] = [];
     const questNames = row.trim().split(',');
-    questNames.forEach((guestName) => {
-      const formated = guestName.trim();
-      rowGuests.push(new GuestModel(formated));
-    });
-    guests.push(rowGuests);
+    questNames.forEach((guestName) => guestsRow.push(guestName.trim()));
+    guests.push(guestsRow);
   });
 
   return guests;

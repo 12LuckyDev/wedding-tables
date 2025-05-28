@@ -1,0 +1,41 @@
+<ng-template #guestsList let-guests="guests">
+  <mat-list>
+    @for (quest of guests; track quest.id; let last = $last) {
+      <mat-list-item>{{ quest.name }}</mat-list-item>
+      @if (!last) {
+        <mat-divider></mat-divider>
+      }
+    }
+  </mat-list>
+</ng-template>
+
+<h2 mat-dialog-title>Guests import summary</h2>
+<mat-dialog-content>
+  @for (group of groups; track $index) {
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>
+          {{ getGroupTitle(group) }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ getGroupSubtitle(group) }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ng-container *ngTemplateOutlet="guestsList; context: { guests: group.newGuests }"></ng-container>
+      </mat-card-content>
+    </mat-card>
+  }
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title> New Single Guests</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ng-container *ngTemplateOutlet="guestsList; context: { guests: newSingleGuests }"></ng-container>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="accept()">Accept</button>
+</mat-dialog-actions>

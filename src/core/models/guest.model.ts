@@ -4,12 +4,14 @@ export interface Guest {
   id: string;
   name: string;
   initials: string;
+  groupId?: string;
 }
 
 export class GuestModel implements Guest {
   public id: string;
   public name: string;
   public initials: string;
+  public groupId?: string;
 
   constructor(name: string) {
     this.id = uuidv4();

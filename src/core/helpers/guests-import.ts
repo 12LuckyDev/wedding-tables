@@ -1,0 +1,63 @@
+import { GroupImportSummaryModel, GroupImportType, Guest, GuestImportSummaryModel, GuestModel } from '../models';
+import { readGuestFile } from './read-guest-file';
+import { v4 as uuidv4 } from 'uuid';
+
+export const guestsImport = async (file: File, guests: Guest[]): Promise<GuestImportSummaryModel> => {
+  const summary: GuestImportSummaryModel = { groups: [], newSingleGuests: [], existingSingleGuests: [] };
+
+  const newGuests: string[][] = await readGuestFile(file);
+
+  newGuests.forEach((guestsRow: string[]) => {
+    if (guestsRow.length === 1) {
+      const existed = guests.find(({ name }) => name === guestsRow[0]);
+      if (existed) {
+        summary.existingSingleGuests.push(existed);
+      } else {
+        summary.newSingleGuests.push(new GuestModel(guestsRow[0]));
+      }
+      return;
+    }
+
+    const newGuests: Guest[] = [];
+    const existingGuests: Guest[] = [];
+    const possibleGroupsGuests: Guest[] = [];
+
+    guestsRow.forEach((guestName) => {
+      const existed = guests.find(({ name }) => name === guestName);
+      if (!existed) {
+        newGuests.push(new GuestModel(guestName));
+        return;
+      }
+
+      if (existed.groupId) {
+        possibleGroupsGuests.push(existed);
+      } else {
+        existingGuests.push(existed);
+      }
+    });
+
+    const possibleGroups: string[] = possibleGroupsGuests
+      .map(({ groupId }) => groupId)
+      .filter((groupId) => !!groupId) as string[];
+
+    let type: GroupImportType;
+    if (possibleGroups.length > 0) {
+      type = possibleGroups.length > 1 ? GroupImportType.manyGroups : GroupImportType.existingGroup;
+    } else {
+      possibleGroups.push(uuidv4());
+      type = GroupImportType.newGroup;
+    }
+
+    const groupSummary: GroupImportSummaryModel = {
+      newGuests,
+      existingGuests,
+      possibleGroupsGuests,
+      type,
+      groupIds: possibleGroups,
+    };
+
+    summary.groups.push(groupSummary);
+  });
+
+  return summary;
+};
