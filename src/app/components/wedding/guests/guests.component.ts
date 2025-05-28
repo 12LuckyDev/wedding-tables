@@ -1,12 +1,6 @@
 import { Component, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../wedding.store';
-import {
-  CdkDragDrop,
-  CdkDrag,
-  CdkDropList,
-  CdkDragPreview,
-  CdkDragPlaceholder,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDrag, CdkDropList, CdkDragPreview, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 import { WeddingService } from '../weddings.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -42,26 +36,14 @@ export class GuestsComponent {
   }
 
   public drop(
-    event: CdkDragDrop<
-      Guest[],
-      Guest[],
-      { guest: Guest; tableNumber: number | null; chairIndex: number | null }
-    >
+    event: CdkDragDrop<Guest[], Guest[], { guest: Guest; tableNumber: number | null; chairIndex: number | null }>,
   ): void {
     const { guest, tableNumber, chairIndex } = event.item.data;
 
     if (tableNumber !== null && chairIndex !== null) {
-      this._weddingStore.removeGuestFromTable(
-        guest,
-        event.currentIndex,
-        tableNumber,
-        chairIndex
-      );
+      this._weddingStore.removeGuestFromTable(guest, event.currentIndex, tableNumber, chairIndex);
     } else {
-      this._weddingStore.moveGuestInList(
-        event.previousIndex,
-        event.currentIndex
-      );
+      this._weddingStore.moveGuestInList(event.previousIndex, event.currentIndex);
     }
   }
 

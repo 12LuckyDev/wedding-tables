@@ -3,29 +3,15 @@
 
   <span class="toolbar-spacer"></span>
 
-  <button
-    mat-icon-button
-    aria-label="Add quests button"
-    class="add-button"
-    (click)="onAddQuests()"
-  >
+  <button mat-icon-button aria-label="Add quests button" class="add-button" (click)="onAddQuests()">
     <mat-icon>add</mat-icon>
   </button>
 
-  <button
-    mat-icon-button
-    aria-label="Import quests button"
-    (click)="file.click()"
-  >
+  <button mat-icon-button aria-label="Import quests button" (click)="file.click()">
     <mat-icon>upload_file</mat-icon>
   </button>
 
-  <input
-    #file
-    type="file"
-    style="display: none"
-    (change)="onImportQuests(file)"
-  />
+  <input #file type="file" style="display: none" (change)="onImportQuests(file)" />
 </mat-toolbar>
 
 <div
@@ -37,20 +23,16 @@
   (cdkDropListEntered)="onListEntered()"
 >
   @for (guest of guests(); track guest.id) {
-  <div
-    class="example-box"
-    cdkDrag
-    [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }"
-  >
-    {{ guest.name }}
-    <span *cdkDragPreview>{{ guest.initials }}</span>
-    <ng-container *cdkDragPlaceholder>
-      @if(dragHoverType$ | async){
-      <span> {{ guest.initials }} </span>
-      } @else{
-      <div class="example-box">{{ guest.name }}</div>
-      }
-    </ng-container>
-  </div>
+    <div class="example-box" cdkDrag [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }">
+      {{ guest.name }}
+      <span *cdkDragPreview>{{ guest.initials }}</span>
+      <ng-container *cdkDragPlaceholder>
+        @if (dragHoverType$ | async) {
+          <span> {{ guest.initials }} </span>
+        } @else {
+          <div class="example-box">{{ guest.name }}</div>
+        }
+      </ng-container>
+    </div>
   }
 </div>

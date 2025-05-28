@@ -8,12 +8,7 @@ import { WeddingService } from './weddings.service';
 
 @Component({
   selector: 'app-wedding',
-  imports: [
-    TablesComponent,
-    GuestsComponent,
-    MatSidenavModule,
-    CdkDropListGroup,
-  ],
+  imports: [TablesComponent, GuestsComponent, MatSidenavModule, CdkDropListGroup],
   providers: [WeddingStore, WeddingService],
   templateUrl: './wedding.component.html',
   styleUrl: './wedding.component.scss',

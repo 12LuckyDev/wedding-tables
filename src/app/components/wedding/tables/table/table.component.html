@@ -2,47 +2,42 @@
 <div class="table-container">
   <div class="table">
     {{ tableNumber() }}
-    <button
-      mat-icon-button
-      aria-label="Add table button"
-      class="danger-button"
-      (click)="onDeleteTable()"
-    >
+    <button mat-icon-button aria-label="Add table button" class="danger-button" (click)="onDeleteTable()">
       <mat-icon>delete</mat-icon>
     </button>
   </div>
 
-  @for(chair of chairs(); let index = $index; track index;){
-  <div class="chair" [style]="getTranform(index)">
-    <div
-      class="chair-pillow"
-      [style]="getReverseTranform(index)"
-      cdkDropList
-      [cdkDropListData]="chair"
-      [cdkDropListEnterPredicate]="dropPredicate"
-      (cdkDropListDropped)="drop($event, index)"
-      (cdkDropListEntered)="onListEntered()"
-      [attr.index]="index"
-    >
-      @for (guest of chair; track guest.id) {
-      <span
-        cdkDrag
-        [cdkDragData]="{
-          guest: guest,
-          tableNumber: tableNumber(),
-          chairIndex: index
-        }"
-        >{{ guest.initials }}
-        <ng-container *cdkDragPlaceholder>
-          @if(dragHoverType$ | async){
-          <span> {{ guest.initials }} </span>
-          } @else{
-          <div class="example-box">{{ guest.name }}</div>
-          }
-        </ng-container>
-      </span>
-      }
+  @for (chair of chairs(); let index = $index; track index) {
+    <div class="chair" [style]="getTranform(index)">
+      <div
+        class="chair-pillow"
+        [style]="getReverseTranform(index)"
+        cdkDropList
+        [cdkDropListData]="chair"
+        [cdkDropListEnterPredicate]="dropPredicate"
+        (cdkDropListDropped)="drop($event, index)"
+        (cdkDropListEntered)="onListEntered()"
+        [attr.index]="index"
+      >
+        @for (guest of chair; track guest.id) {
+          <span
+            cdkDrag
+            [cdkDragData]="{
+              guest: guest,
+              tableNumber: tableNumber(),
+              chairIndex: index,
+            }"
+            >{{ guest.initials }}
+            <ng-container *cdkDragPlaceholder>
+              @if (dragHoverType$ | async) {
+                <span> {{ guest.initials }} </span>
+              } @else {
+                <div class="example-box">{{ guest.name }}</div>
+              }
+            </ng-container>
+          </span>
+        }
+      </div>
     </div>
-  </div>
   }
 </div>

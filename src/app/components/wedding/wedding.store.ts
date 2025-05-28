@@ -1,10 +1,4 @@
-import {
-  editAt,
-  editPropAt,
-  move,
-  nMap,
-  removeByProp,
-} from '@12luckydev/utils';
+import { editAt, editPropAt, move, nMap, removeByProp } from '@12luckydev/utils';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Table, Guest, Wedding, GuestModel } from '../../../core/models';
 
@@ -23,41 +17,22 @@ const PEOPLE = [
   'Larry Esquivel',
 ];
 
-const addQuestToTable = (
-  tables: Table[],
-  guest: Guest,
-  tableNumber: number,
-  chairIndex: number
-): Table[] | null => {
+const addQuestToTable = (tables: Table[], guest: Guest, tableNumber: number, chairIndex: number): Table[] | null => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
   if (tableIndex === -1) {
     return null;
   }
 
-  return editPropAt(
-    tables,
-    'chairs',
-    editAt(tables[tableIndex].chairs, guest, chairIndex),
-    tableIndex
-  );
+  return editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, guest, chairIndex), tableIndex);
 };
 
-const removeQuestFromTable = (
-  tables: Table[],
-  tableNumber: number,
-  chairIndex: number
-): Table[] | null => {
+const removeQuestFromTable = (tables: Table[], tableNumber: number, chairIndex: number): Table[] | null => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
   if (tableIndex === -1) {
     return null;
   }
 
-  return editPropAt(
-    tables,
-    'chairs',
-    editAt(tables[tableIndex].chairs, null, chairIndex),
-    tableIndex
-  );
+  return editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, null, chairIndex), tableIndex);
 };
 
 export const WeddingStore = signalStore(
@@ -83,7 +58,7 @@ export const WeddingStore = signalStore(
               chairs: nMap(12, () => null),
             },
           ],
-        })
+        }),
       );
     },
     removeTable(table: number) {
@@ -92,16 +67,11 @@ export const WeddingStore = signalStore(
         (oldState): Wedding => ({
           ...oldState,
           tables: oldState.tables.filter((t) => t.number !== table),
-        })
+        }),
       );
     },
     moveGuestFromList(guest: Guest, tableNumber: number, chairIndex: number) {
-      const tables = addQuestToTable(
-        state.tables(),
-        guest,
-        tableNumber,
-        chairIndex
-      );
+      const tables = addQuestToTable(state.tables(), guest, tableNumber, chairIndex);
       if (tables === null) {
         return;
       }
@@ -114,7 +84,7 @@ export const WeddingStore = signalStore(
           ...oldState,
           guests,
           tables,
-        })
+        }),
       );
     },
     moveGuestBetweenTables(
@@ -122,31 +92,19 @@ export const WeddingStore = signalStore(
       tableNumber: number,
       previousTableNumber: number,
       chairIndex: number,
-      previousChairIndex: number
+      previousChairIndex: number,
     ) {
-      if (
-        tableNumber === previousTableNumber &&
-        chairIndex === previousChairIndex
-      ) {
+      if (tableNumber === previousTableNumber && chairIndex === previousChairIndex) {
         return;
       }
 
-      const tablesAfterAdd = addQuestToTable(
-        state.tables(),
-        guest,
-        tableNumber,
-        chairIndex
-      );
+      const tablesAfterAdd = addQuestToTable(state.tables(), guest, tableNumber, chairIndex);
 
       if (tablesAfterAdd === null) {
         return;
       }
 
-      const tablesAfterRemove = removeQuestFromTable(
-        tablesAfterAdd,
-        previousTableNumber,
-        previousChairIndex
-      );
+      const tablesAfterRemove = removeQuestFromTable(tablesAfterAdd, previousTableNumber, previousChairIndex);
       if (tablesAfterRemove === null) {
         return;
       }
@@ -156,20 +114,11 @@ export const WeddingStore = signalStore(
         (oldState): Wedding => ({
           ...oldState,
           tables: tablesAfterRemove,
-        })
+        }),
       );
     },
-    removeGuestFromTable(
-      guest: Guest,
-      index: number,
-      previousTableNumber: number,
-      previousChairIndex: number
-    ) {
-      const tables = removeQuestFromTable(
-        state.tables(),
-        previousTableNumber,
-        previousChairIndex
-      );
+    removeGuestFromTable(guest: Guest, index: number, previousTableNumber: number, previousChairIndex: number) {
+      const tables = removeQuestFromTable(state.tables(), previousTableNumber, previousChairIndex);
       if (tables === null) {
         return;
       }
@@ -182,7 +131,7 @@ export const WeddingStore = signalStore(
           ...oldState,
           tables,
           guests,
-        })
+        }),
       );
     },
     moveGuestInList(from: number, to: number) {
@@ -191,8 +140,8 @@ export const WeddingStore = signalStore(
         (oldState): Wedding => ({
           ...oldState,
           guests: move(state.guests(), from, to),
-        })
+        }),
       );
     },
-  }))
+  })),
 );

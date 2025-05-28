@@ -1,9 +1,4 @@
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDragPlaceholder,
-  CdkDropList,
-} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,14 +10,7 @@ import { Table, Guest } from '../../../../../core/models';
 
 @Component({
   selector: 'app-table',
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    CdkDrag,
-    CdkDropList,
-    CdkDragPlaceholder,
-    AsyncPipe,
-  ],
+  imports: [MatButtonModule, MatIconModule, CdkDrag, CdkDropList, CdkDragPlaceholder, AsyncPipe],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
@@ -32,13 +20,10 @@ export class TableComponent {
 
   public readonly tableNumber = input<number>();
   public readonly table: Signal<Table | null> = computed(
-    () =>
-      this._weddingStore
-        .tables()
-        .find((t) => t.number === this.tableNumber()) ?? null
+    () => this._weddingStore.tables().find((t) => t.number === this.tableNumber()) ?? null,
   );
   public readonly chairs: Signal<Guest[][]> = computed(() =>
-    (this.table()?.chairs ?? []).map((guest) => (guest ? [guest] : []))
+    (this.table()?.chairs ?? []).map((guest) => (guest ? [guest] : [])),
   );
 
   public get dragHoverType$(): Observable<boolean> {
@@ -53,9 +38,7 @@ export class TableComponent {
   }
 
   public getTranform(index: number): string {
-    return `transform: rotate(${
-      index * (360 / this.chairs().length)
-    }deg) translateX(440%);`;
+    return `transform: rotate(${index * (360 / this.chairs().length)}deg) translateX(440%);`;
   }
 
   public getReverseTranform(index: number): string {
@@ -68,31 +51,21 @@ export class TableComponent {
       tableNumber: number | null;
       chairIndex: number | null;
     }>,
-    drop: CdkDropList
+    drop: CdkDropList,
   ): boolean {
     return drop.data.length === 0;
   }
 
   public drop(
-    {
-      item,
-    }: CdkDragDrop<
-      Guest[],
-      Guest[],
-      { guest: Guest; tableNumber: number | null; chairIndex: number | null }
-    >,
-    chairIndex: number
+    { item }: CdkDragDrop<Guest[], Guest[], { guest: Guest; tableNumber: number | null; chairIndex: number | null }>,
+    chairIndex: number,
   ): void {
     const tableNumber = this.tableNumber() ?? null;
     if (tableNumber === null) {
       return;
     }
 
-    const {
-      guest,
-      tableNumber: previousTableNumber,
-      chairIndex: previousChairIndex,
-    } = item.data;
+    const { guest, tableNumber: previousTableNumber, chairIndex: previousChairIndex } = item.data;
 
     if (previousTableNumber === null) {
       this._weddingStore.moveGuestFromList(guest, tableNumber, chairIndex);
@@ -102,7 +75,7 @@ export class TableComponent {
         tableNumber,
         previousTableNumber,
         chairIndex,
-        previousChairIndex
+        previousChairIndex,
       );
     }
   }
