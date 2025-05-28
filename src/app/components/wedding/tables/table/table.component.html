@@ -27,12 +27,15 @@
               tableNumber: tableNumber(),
               chairIndex: index,
             }"
+            [style]="{ backgroundColor: guest.bgColor, color: guest.color }"
             >{{ guest.initials }}
             <ng-container *cdkDragPlaceholder>
               @if (dragHoverType$ | async) {
-                <span> {{ guest.initials }} </span>
+                <span [style]="{ backgroundColor: guest.bgColor, color: guest.color }"> {{ guest.initials }} </span>
               } @else {
-                <div class="example-box">{{ guest.name }}</div>
+                <div class="example-box" [style]="{ backgroundColor: guest.bgColor, color: guest.color }">
+                  {{ guest.name }}
+                </div>
               }
             </ng-container>
           </span>

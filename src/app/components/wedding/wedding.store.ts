@@ -1,22 +1,7 @@
 import { editAt, editPropAt, move, nMap, removeByProp } from '@12luckydev/utils';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestModel } from '../../../core/models';
-
-const PEOPLE = [
-  'Bianca Dawson',
-  'Iker Adams',
-  'Stella Gonzalez',
-  'Ethan Woodward',
-  'Drew Buchanan',
-  'Enrique Buck',
-  'Livia Wall',
-  'Issac Hernandez',
-  'Camila Alexander',
-  'Kingston Stokes',
-  'Miranda Walls',
-  'Larry Esquivel',
-  'Jan Kowalski',
-];
+import { Table, Guest, Wedding } from '../../../core/models';
+import { ALL_GUESTS } from './wedding.test-data';
 
 const addQuestToTable = (tables: Table[], guest: Guest, tableNumber: number, chairIndex: number): Table[] | null => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
@@ -43,8 +28,8 @@ export const WeddingStore = signalStore(
       { number: 2, size: 12, chairs: nMap(12, () => null) },
       { number: 3, size: 12, chairs: nMap(12, () => null) },
     ],
-    allGuests: PEOPLE.map((name) => new GuestModel(name)),
-    guests: PEOPLE.map((name) => new GuestModel(name)),
+    allGuests: [...ALL_GUESTS],
+    guests: [...ALL_GUESTS],
   }),
   withMethods((state) => ({
     addTable() {

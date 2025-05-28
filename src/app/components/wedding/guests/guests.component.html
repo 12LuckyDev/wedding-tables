@@ -23,14 +23,21 @@
   (cdkDropListEntered)="onListEntered()"
 >
   @for (guest of guests(); track guest.id) {
-    <div class="example-box" cdkDrag [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }">
+    <div
+      class="example-box"
+      cdkDrag
+      [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }"
+      [style]="{ backgroundColor: guest.bgColor, color: guest.color }"
+    >
       {{ guest.name }}
-      <span *cdkDragPreview>{{ guest.initials }}</span>
+      <span *cdkDragPreview [style]="{ backgroundColor: guest.bgColor, color: guest.color }">{{ guest.initials }}</span>
       <ng-container *cdkDragPlaceholder>
         @if (dragHoverType$ | async) {
-          <span> {{ guest.initials }} </span>
+          <span [style]="{ backgroundColor: guest.bgColor, color: guest.color }"> {{ guest.initials }} </span>
         } @else {
-          <div class="example-box">{{ guest.name }}</div>
+          <div class="example-box" [style]="{ backgroundColor: guest.bgColor, color: guest.color }">
+            {{ guest.name }}
+          </div>
         }
       </ng-container>
     </div>
