@@ -1,5 +1,5 @@
 import { Component, inject, Signal } from '@angular/core';
-import { Guest, WeddingStore } from '../wedding.store';
+import { WeddingStore } from '../wedding.store';
 import {
   CdkDragDrop,
   CdkDrag,
@@ -10,6 +10,11 @@ import {
 import { WeddingService } from '../weddings.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { Guest } from '../../../../core/models';
+import { readGuestFile } from '../../../../core/helpers';
 
 @Component({
   selector: 'app-guests',
@@ -19,6 +24,9 @@ import { AsyncPipe } from '@angular/common';
     CdkDragPreview,
     CdkDragPlaceholder,
     AsyncPipe,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './guests.component.html',
   styleUrl: './guests.component.scss',
@@ -56,6 +64,17 @@ export class GuestsComponent {
       );
     }
   }
+
+  public async onImportQuests(input: HTMLInputElement): Promise<void> {
+    const file = input.files?.[0] ?? null;
+    input.value = '';
+    if (file) {
+      const guests = await readGuestFile(file);
+      console.log(guests);
+    }
+  }
+
+  public onAddQuests(): void {}
 
   public onListEntered(): void {
     this._weddingService.changeHoverType(false);

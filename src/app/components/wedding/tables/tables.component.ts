@@ -3,7 +3,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TableComponent } from './table/table.component';
-import { Table, WeddingStore } from '../wedding.store';
+import { WeddingStore } from '../wedding.store';
+import { Table } from '../../../../core/models';
 
 @Component({
   selector: 'app-tables',

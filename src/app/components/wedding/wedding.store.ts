@@ -5,26 +5,8 @@ import {
   nMap,
   removeByProp,
 } from '@12luckydev/utils';
-import { Signal, WritableSignal } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { v4 as uuidv4 } from 'uuid';
-
-export interface Table {
-  number: number;
-  size: number;
-  chairs: (Guest | null)[];
-}
-
-export interface Guest {
-  id: string;
-  name: string;
-  initials: string;
-}
-
-export interface Wedding {
-  tables: Table[];
-  guests: Guest[];
-}
+import { Table, Guest, Wedding, GuestModel } from '../../../core/models';
 
 const PEOPLE = [
   'Bianca Dawson',
@@ -85,14 +67,7 @@ export const WeddingStore = signalStore(
       { number: 2, size: 12, chairs: nMap(12, () => null) },
       { number: 3, size: 12, chairs: nMap(12, () => null) },
     ],
-    guests: PEOPLE.map((name) => ({
-      id: uuidv4(),
-      name,
-      initials: name
-        .split(' ')
-        .map((part) => part[0] ?? '')
-        .join(''),
-    })),
+    guests: PEOPLE.map((name) => new GuestModel(name)),
   }),
   withMethods((state) => ({
     addTable() {

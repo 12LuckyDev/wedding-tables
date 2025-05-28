@@ -7,10 +7,11 @@ import {
 import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Guest, Table, WeddingStore } from '../../wedding.store';
+import { WeddingStore } from '../../wedding.store';
 import { WeddingService } from '../../weddings.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { Table, Guest } from '../../../../../core/models';
 
 @Component({
   selector: 'app-table',
