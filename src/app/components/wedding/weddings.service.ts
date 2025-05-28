@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class WeddingService {
   private _dragHoverTypeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public readonly dragHoverType$: Observable<boolean> = this._dragHoverTypeSubject.asObservable();

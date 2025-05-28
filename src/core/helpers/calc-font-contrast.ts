@@ -1,4 +1,8 @@
 export const calcFontContrast = (hexcolor: string): string => {
+  if (hexcolor === 'transparent') {
+    return '#000000';
+  }
+
   const cleanHex = hexcolor.replace('#', '');
 
   const r = parseInt(cleanHex.substr(0, 2), 16);

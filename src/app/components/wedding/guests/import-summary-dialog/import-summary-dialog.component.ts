@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { NgTemplateOutlet } from '@angular/common';
+import { WeddingStore } from '../../wedding.store';
 
 @Component({
   selector: 'app-import-summary-dialog',
@@ -14,6 +15,7 @@ import { NgTemplateOutlet } from '@angular/common';
   styleUrl: './import-summary-dialog.component.scss',
 })
 export class ImportSummaryDialogComponent {
+  private readonly _weddingStore = inject(WeddingStore);
   private readonly _dialogRef = inject(MatDialogRef<ImportSummaryDialogComponent>);
   public readonly data = inject<{ guestsToImport: GuestImportSummaryModel }>(MAT_DIALOG_DATA);
 
@@ -56,6 +58,7 @@ export class ImportSummaryDialogComponent {
   }
 
   public accept(): void {
+    this._weddingStore.importGuests(this.data.guestsToImport);
     this._dialogRef.close();
   }
 

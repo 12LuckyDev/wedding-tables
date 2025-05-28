@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar class="guest-toolbar">
   <span>Guest List</span>
 
   <span class="toolbar-spacer"></span>
@@ -18,7 +18,7 @@
   id="guest-list"
   cdkDropList
   [cdkDropListData]="guests()"
-  class="example-list"
+  class="guest-list"
   (cdkDropListDropped)="drop($event)"
   (cdkDropListEntered)="onListEntered()"
 >

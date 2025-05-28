@@ -1,7 +1,8 @@
 import { editAt, editPropAt, move, nMap, removeByProp } from '@12luckydev/utils';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding } from '../../../core/models';
+import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType } from '../../../core/models';
 import { ALL_GUESTS } from './wedding.test-data';
+import { calcFontContrast, uuidToHexColor } from '../../../core/helpers';
 
 const addQuestToTable = (tables: Table[], guest: Guest, tableNumber: number, chairIndex: number): Table[] | null => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
@@ -22,6 +23,7 @@ const removeQuestFromTable = (tables: Table[], tableNumber: number, chairIndex: 
 };
 
 export const WeddingStore = signalStore(
+  { providedIn: 'root' },
   withState<Wedding>({
     tables: [
       { number: 1, size: 12, chairs: nMap(12, () => null) },
@@ -127,6 +129,33 @@ export const WeddingStore = signalStore(
         (oldState): Wedding => ({
           ...oldState,
           guests: move(state.guests(), from, to),
+        }),
+      );
+    },
+    importGuests({ groups, newSingleGuests }: GuestImportSummaryModel) {
+      const newGuest = [...newSingleGuests];
+
+      groups.forEach((group) => {
+        switch (group.type) {
+          case GroupImportType.newGroup:
+          case GroupImportType.existingGroup:
+            const [groupId] = group.groupIds;
+            const bgColor = uuidToHexColor(groupId);
+            const color = calcFontContrast(bgColor);
+            group.newGuests.forEach((g) => newGuest.push({ ...g, groupId, bgColor, color }));
+            break;
+          case GroupImportType.manyGroups:
+            //TODO
+            break;
+        }
+      });
+
+      patchState(
+        state,
+        (oldState): Wedding => ({
+          ...oldState,
+          allGuests: [...state.allGuests(), ...newGuest],
+          guests: [...state.guests(), ...newGuest],
         }),
       );
     },
