@@ -3,8 +3,9 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType } from '../../../core/models';
 import { ALL_GUESTS } from './wedding.test-data';
 import { calcFontContrast, uuidToHexColor } from '../../../core/helpers';
+import { computed, Signal } from '@angular/core';
 
-const addQuestToTable = (tables: Table[], guest: Guest, tableNumber: number, chairIndex: number): Table[] | null => {
+const addQuestToTable = (tables: Table[], guest: string, tableNumber: number, chairIndex: number): Table[] | null => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
   if (tableIndex === -1) {
     return null;
@@ -22,6 +23,8 @@ const removeQuestFromTable = (tables: Table[], tableNumber: number, chairIndex: 
   return editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, null, chairIndex), tableIndex);
 };
 
+// TABLE SHOULD HAVE ONLY GUEST ID, AND FIND GUEST FROM LIST
+
 export const WeddingStore = signalStore(
   { providedIn: 'root' },
   withState<Wedding>({
@@ -34,6 +37,12 @@ export const WeddingStore = signalStore(
     guests: [...ALL_GUESTS],
   }),
   withMethods((state) => ({
+    getTable(number: Signal<number | undefined>): Signal<Table | null> {
+      return computed(() => state.tables().find((t) => t.number === number()) ?? null);
+    },
+    getGuest(guestId: Signal<string | null>): Signal<Guest | null> {
+      return computed(() => state.allGuests().find((g) => g.id === guestId()) ?? null);
+    },
     addTable() {
       patchState(
         state,
@@ -60,7 +69,7 @@ export const WeddingStore = signalStore(
       );
     },
     moveGuestFromList(guest: Guest, tableNumber: number, chairIndex: number) {
-      const tables = addQuestToTable(state.tables(), guest, tableNumber, chairIndex);
+      const tables = addQuestToTable(state.tables(), guest.id, tableNumber, chairIndex);
       if (tables === null) {
         return;
       }
@@ -87,7 +96,7 @@ export const WeddingStore = signalStore(
         return;
       }
 
-      const tablesAfterAdd = addQuestToTable(state.tables(), guest, tableNumber, chairIndex);
+      const tablesAfterAdd = addQuestToTable(state.tables(), guest.id, tableNumber, chairIndex);
 
       if (tablesAfterAdd === null) {
         return;
@@ -138,7 +147,7 @@ export const WeddingStore = signalStore(
       groups.forEach((group) => {
         switch (group.type) {
           case GroupImportType.newGroup:
-          case GroupImportType.existingGroup:
+          case GroupImportType.existingGroup: //TODO add group to existing guests
             const [groupId] = group.groupIds;
             const bgColor = uuidToHexColor(groupId);
             const color = calcFontContrast(bgColor);

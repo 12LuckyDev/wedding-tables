@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+//TODO change into store
+//TODO color tables when start dragging guest with group
 @Injectable({ providedIn: 'root' })
 export class WeddingService {
   private _dragHoverTypeSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);

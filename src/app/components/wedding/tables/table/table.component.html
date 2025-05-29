@@ -7,40 +7,9 @@
     </button>
   </div>
 
-  @for (chair of chairs(); let index = $index; track index) {
-    <div class="chair" [style]="getTranform(index)">
-      <div
-        class="chair-pillow"
-        [style]="getReverseTranform(index)"
-        cdkDropList
-        [cdkDropListData]="chair"
-        [cdkDropListEnterPredicate]="dropPredicate"
-        (cdkDropListDropped)="drop($event, index)"
-        (cdkDropListEntered)="onListEntered()"
-        [attr.index]="index"
-      >
-        @for (guest of chair; track guest.id) {
-          <span
-            cdkDrag
-            [cdkDragData]="{
-              guest: guest,
-              tableNumber: tableNumber(),
-              chairIndex: index,
-            }"
-            [style]="{ backgroundColor: guest.bgColor, color: guest.color }"
-            >{{ guest.initials }}
-            <ng-container *cdkDragPlaceholder>
-              @if (dragHoverType$ | async) {
-                <span [style]="{ backgroundColor: guest.bgColor, color: guest.color }"> {{ guest.initials }} </span>
-              } @else {
-                <div class="example-box" [style]="{ backgroundColor: guest.bgColor, color: guest.color }">
-                  {{ guest.name }}
-                </div>
-              }
-            </ng-container>
-          </span>
-        }
-      </div>
+  @for (guestId of table()?.chairs; let index = $index; track index) {
+    <div class="chair" [style]="transforms()[index]">
+      <app-chair [tableNumber]="tableNumber()" [chairIndex]="index" [guestId]="guestId"></app-chair>
     </div>
   }
 </div>

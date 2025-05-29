@@ -1,0 +1,33 @@
+<div
+  class="chair"
+  cdkDropList
+  [cdkDropListData]="guestId()"
+  (cdkDropListDropped)="drop($event)"
+  (cdkDropListEntered)="onListEntered()"
+  [cdkDropListEnterPredicate]="dropPredicate"
+>
+  @if (guest(); as existingGuest) {
+    <span
+      [style]="{ backgroundColor: existingGuest.bgColor, color: existingGuest.color }"
+      cdkDrag
+      [cdkDragData]="{
+        guest: existingGuest,
+        tableNumber: tableNumber(),
+        chairIndex: chairIndex(),
+      }"
+    >
+      {{ existingGuest.initials }}
+      <ng-container *cdkDragPlaceholder>
+        @if (dragHoverType$ | async) {
+          <span [style]="{ backgroundColor: existingGuest.bgColor, color: existingGuest.color }">
+            {{ existingGuest.initials }}
+          </span>
+        } @else {
+          <div class="example-box" [style]="{ backgroundColor: existingGuest.bgColor, color: existingGuest.color }">
+            {{ existingGuest.name }}
+          </div>
+        }
+      </ng-container>
+    </span>
+  }
+</div>
