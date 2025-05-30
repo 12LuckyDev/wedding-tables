@@ -8,7 +8,7 @@
   </div>
 
   @for (guestId of table()?.chairs; let index = $index; track index) {
-    <div class="chair" [style]="transforms()[index]">
+    <div class="chair-wrapper" [style]="transforms()[index]">
       <app-chair [tableNumber]="tableNumber()" [chairIndex]="index" [guestId]="guestId"></app-chair>
     </div>
   }

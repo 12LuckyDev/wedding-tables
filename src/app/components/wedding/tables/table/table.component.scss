@@ -1,23 +1,35 @@
 .table-container {
-  width: 400px;
-  height: 400px;
-  border: solid 1px #ccc;
-  border-radius: 50%;
-  color: rgba(0, 0, 0, 0.87);
-  cursor: move;
+  --table-container-size: calc(var(--chair-size) * var(--table-wrapper-size-multi));
+  --table-multi-diff: calc(var(--table-wrapper-size-multi) - var(--table-size-multi));
+
+  --chair-translate-to-table-multi: calc(var(--table-multi-diff) + 1);
+  --chair-translate-from-table-multi: calc(calc(calc(var(--table-multi-diff) / 2) - 1) / 2);
+  --chair-translate: calc(
+    var(--chair-size) * calc(var(--chair-translate-to-table-multi) + var(--chair-translate-from-table-multi))
+  );
+
+  width: var(--table-container-size);
+  height: var(--table-container-size);
+  margin: calc(var(--chair-size) / 2);
+
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  border: solid 1px #ccc;
+  border-radius: 50%;
+  color: rgba(0, 0, 0, 0.87);
+  cursor: move;
+
   background: #fff;
-  margin: 25px;
   box-sizing: border-box;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
   box-shadow:
     0 3px 1px -2px rgba(0, 0, 0, 0.2),
     0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  position: relative;
 }
 
 .table-container:active {
@@ -28,8 +40,9 @@
 }
 
 .table {
-  height: 75%;
-  width: 75%;
+  --table-size: calc(var(--chair-size) * var(--table-size-multi));
+  height: var(--table-size);
+  width: var(--table-size);
   border: solid 1px #ccc;
   border-radius: 50%;
   display: flex;
@@ -38,9 +51,9 @@
   align-items: center;
 }
 
-.chair {
-  height: 10%;
-  width: 10%;
+.chair-wrapper {
+  height: var(--chair-size);
+  width: var(--chair-size);
   box-sizing: border-box;
   border: solid 1px #ccc;
   border-radius: 50%;

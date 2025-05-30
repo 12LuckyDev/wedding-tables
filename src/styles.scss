@@ -9,6 +9,10 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+  --chair-size: 40px;
+  --table-wrapper-size-multi: 10;
+  --table-size-multi: 7;
 }
 
 .toolbar-spacer {

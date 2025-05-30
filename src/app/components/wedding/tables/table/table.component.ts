@@ -28,7 +28,8 @@ export class TableComponent {
     const amount = this.table()?.chairs?.length ?? 0;
     return nMap(
       amount,
-      (i) => `transform: rotate(${i * (360 / amount)}deg) translateX(440%) rotate(-${i * (360 / amount)}deg);`,
+      (i) =>
+        `transform: rotate(${i * (360 / amount)}deg) translateX(var(--chair-translate)) rotate(-${i * (360 / amount)}deg);`,
     );
   });
 
