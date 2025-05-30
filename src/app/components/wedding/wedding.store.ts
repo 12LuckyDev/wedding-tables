@@ -1,5 +1,5 @@
-import { editAt, editPropAt, move, nMap, removeByProp } from '@12luckydev/utils';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { editAt, editPropAt, move, nMap } from '@12luckydev/utils';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType } from '../../../core/models';
 import { ALL_GUESTS } from './wedding.test-data';
 import { calcFontContrast, uuidToHexColor } from '../../../core/helpers';
@@ -10,16 +10,31 @@ const changeQuestAtTable = (
   guest: string | null,
   tableNumber: number,
   chairIndex: number,
-): Table[] | null => {
+): Table[] => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
-  if (tableIndex === -1) {
-    return null;
-  }
 
-  return editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, guest, chairIndex), tableIndex);
+  return tableIndex === -1
+    ? tables
+    : editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, guest, chairIndex), tableIndex);
 };
 
-// TABLE SHOULD HAVE ONLY GUEST ID, AND FIND GUEST FROM LIST
+const patchWeddingState = (
+  state: Wedding,
+  stateChanged: { tables?: Table[]; guestIds?: string[]; allGuests?: Guest[] },
+): Wedding => {
+  const newState = { ...state };
+
+  if (stateChanged.tables) {
+    newState.tables = stateChanged.tables;
+  }
+  if (stateChanged.guestIds) {
+    newState.guestIds = stateChanged.guestIds;
+  }
+  if (stateChanged.allGuests) {
+    newState.allGuests = stateChanged.allGuests;
+  }
+  return newState;
+};
 
 export const WeddingStore = signalStore(
   { providedIn: 'root' },
@@ -30,8 +45,17 @@ export const WeddingStore = signalStore(
       { number: 3, size: 12, chairs: nMap(12, () => null) },
     ],
     allGuests: [...ALL_GUESTS],
-    guests: [...ALL_GUESTS],
+    guestIds: ALL_GUESTS.map((el) => el.id),
   }),
+  withComputed(({ guestIds, allGuests }) => ({
+    guests: computed(() => {
+      const all = allGuests();
+      const guests = guestIds()
+        .map((id) => all.find((g) => g.id === id))
+        .filter((g) => !!g);
+      return guests;
+    }),
+  })),
   withMethods((state) => ({
     getTable(number: Signal<number | undefined>): Signal<Table | null> {
       return computed(() => state.tables().find((t) => t.number === number()) ?? null);
@@ -40,49 +64,29 @@ export const WeddingStore = signalStore(
       return computed(() => state.allGuests().find((g) => g.id === guestId()) ?? null);
     },
     addTable() {
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          tables: [
-            ...oldState.tables,
-            {
-              number: oldState.tables.length + 1,
-              size: 12,
-              chairs: nMap(12, () => null),
-            },
-          ],
-        }),
-      );
+      const oldTables = state.tables();
+      const tables = [
+        ...oldTables,
+        {
+          number: oldTables.length + 1,
+          size: 12,
+          chairs: nMap(12, () => null),
+        },
+      ];
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables }));
     },
     removeTable(table: number) {
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          tables: oldState.tables.filter((t) => t.number !== table),
-        }),
-      );
+      const tables = state.tables().filter((t) => t.number !== table);
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables }));
     },
-    moveGuestFromList(guest: Guest, tableNumber: number, chairIndex: number) {
-      const tables = changeQuestAtTable(state.tables(), guest.id, tableNumber, chairIndex);
-      if (tables === null) {
-        return;
-      }
+    moveGuestFromList({ id }: Guest, tableNumber: number, chairIndex: number) {
+      const tables = changeQuestAtTable(state.tables(), id, tableNumber, chairIndex);
+      const guestIds = state.guestIds().filter((guestId) => guestId !== id);
 
-      const guests = removeByProp(state.guests(), 'id', guest.id);
-
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          guests,
-          tables,
-        }),
-      );
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables, guestIds }));
     },
     moveGuestBetweenTables(
-      guest: Guest,
+      { id }: Guest,
       tableNumber: number,
       previousTableNumber: number,
       chairIndex: number,
@@ -92,50 +96,19 @@ export const WeddingStore = signalStore(
         return;
       }
 
-      const tablesAfterAdd = changeQuestAtTable(state.tables(), guest.id, tableNumber, chairIndex);
-
-      if (tablesAfterAdd === null) {
-        return;
-      }
-
+      const tablesAfterAdd = changeQuestAtTable(state.tables(), id, tableNumber, chairIndex);
       const tablesAfterRemove = changeQuestAtTable(tablesAfterAdd, null, previousTableNumber, previousChairIndex);
-      if (tablesAfterRemove === null) {
-        return;
-      }
-
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          tables: tablesAfterRemove,
-        }),
-      );
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables: tablesAfterRemove }));
     },
-    removeGuestFromTable(guest: Guest, index: number, previousTableNumber: number, previousChairIndex: number) {
+    removeGuestFromTable({ id }: Guest, index: number, previousTableNumber: number, previousChairIndex: number) {
       const tables = changeQuestAtTable(state.tables(), null, previousTableNumber, previousChairIndex);
-      if (tables === null) {
-        return;
-      }
+      const guestIds = state.guestIds().toSpliced(index, 0, id);
 
-      const guests = state.guests().toSpliced(index, 0, guest);
-
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          tables,
-          guests,
-        }),
-      );
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables, guestIds }));
     },
     moveGuestInList(from: number, to: number) {
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          guests: move(state.guests(), from, to),
-        }),
-      );
+      const guestIds = move(state.guestIds(), from, to);
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { guestIds }));
     },
     importGuests({ groups, newSingleGuests }: GuestImportSummaryModel) {
       const newGuest = [...newSingleGuests];
@@ -155,14 +128,10 @@ export const WeddingStore = signalStore(
         }
       });
 
-      patchState(
-        state,
-        (oldState): Wedding => ({
-          ...oldState,
-          allGuests: [...state.allGuests(), ...newGuest],
-          guests: [...state.guests(), ...newGuest],
-        }),
-      );
+      const allGuests = [...state.allGuests(), ...newGuest];
+      const guestIds = [...state.guestIds(), ...newGuest.map(({ id }) => id)];
+
+      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { guestIds, allGuests }));
     },
   })),
 );

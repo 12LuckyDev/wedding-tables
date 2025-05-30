@@ -1,5 +1,5 @@
 import { Component, inject, input, Signal } from '@angular/core';
-import { Guest } from '../../../../../../core/models';
+import { Guest, GuestDragData } from '../../../../../../core/models';
 import { WeddingStore } from '../../../wedding.store';
 import { WeddingService } from '../../../weddings.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,13 +31,7 @@ export class ChairComponent {
     return drop.data === null;
   }
 
-  public drop({
-    item,
-  }: CdkDragDrop<
-    string | null,
-    string,
-    { guest: Guest; tableNumber: number | null; chairIndex: number | null }
-  >): void {
+  public drop({ item }: CdkDragDrop<string | null, Guest[] | string, GuestDragData>): void {
     const tableNumber = this.tableNumber() ?? null;
     const chairIndex = this.chairIndex() ?? null;
     if (tableNumber === null || chairIndex === null) {

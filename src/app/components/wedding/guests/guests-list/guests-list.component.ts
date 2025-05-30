@@ -1,7 +1,7 @@
 import { Component, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../wedding.store';
 import { WeddingService } from '../../weddings.service';
-import { Guest } from '../../../../../core/models';
+import { Guest, GuestDragData } from '../../../../../core/models';
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDragPreview, CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,9 +34,7 @@ export class GuestsListComponent {
     return this._weddingService.dragHoverType$;
   }
 
-  public drop(
-    event: CdkDragDrop<Guest[], Guest[], { guest: Guest; tableNumber: number | null; chairIndex: number | null }>,
-  ): void {
+  public drop(event: CdkDragDrop<Guest[], Guest[] | (string | null), GuestDragData>): void {
     const { guest, tableNumber, chairIndex } = event.item.data;
 
     if (tableNumber !== null && chairIndex !== null) {
