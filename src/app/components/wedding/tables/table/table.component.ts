@@ -16,13 +16,7 @@ export class TableComponent {
   private readonly _weddingStore = inject(WeddingStore);
 
   public readonly tableNumber = input<number>();
-
   public readonly table: Signal<Table | null> = this._weddingStore.getTable(this.tableNumber);
-  public readonly chairs: Signal<Guest[][]> = computed(() => {
-    return (this.table()?.chairs ?? []).map((guestId: string | null) => {
-      return [guestId ? (this._weddingStore.allGuests().find((g) => g.id === guestId) ?? []) : []] as Guest[];
-    });
-  });
 
   public readonly transforms: Signal<string[]> = computed(() => {
     const amount = this.table()?.chairs?.length ?? 0;

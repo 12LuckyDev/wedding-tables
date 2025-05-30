@@ -1,4 +1,4 @@
-import { editAt, editPropAt, move, nMap } from '@12luckydev/utils';
+import { editAt, editPropAt, mappify, move, nMap } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType } from '../../../core/models';
 import { ALL_GUESTS } from './wedding.test-data';
@@ -20,7 +20,7 @@ const changeQuestAtTable = (
 
 const patchWeddingState = (
   state: Wedding,
-  stateChanged: { tables?: Table[]; guestIds?: string[]; allGuests?: Guest[] },
+  stateChanged: { tables?: Table[]; guestIds?: string[]; allGuests?: Map<string, Guest> },
 ): Wedding => {
   const newState = { ...state };
 
@@ -31,7 +31,7 @@ const patchWeddingState = (
     newState.guestIds = stateChanged.guestIds;
   }
   if (stateChanged.allGuests) {
-    newState.allGuests = stateChanged.allGuests;
+    newState._allGuests = stateChanged.allGuests;
   }
   return newState;
 };
@@ -44,16 +44,26 @@ export const WeddingStore = signalStore(
       { number: 2, size: 12, chairs: nMap(12, () => null) },
       { number: 3, size: 12, chairs: nMap(12, () => null) },
     ],
-    allGuests: [...ALL_GUESTS],
     guestIds: ALL_GUESTS.map((el) => el.id),
+    _allGuests: mappify(ALL_GUESTS, 'id'),
   }),
-  withComputed(({ guestIds, allGuests }) => ({
+  withComputed(({ _allGuests, guestIds, tables }) => ({
     guests: computed(() => {
-      const all = allGuests();
-      const guests = guestIds()
-        .map((id) => all.find((g) => g.id === id))
+      const guestMap = _allGuests();
+      return guestIds()
+        .map((id) => guestMap.get(id))
         .filter((g) => !!g);
-      return guests;
+    }),
+    tablesGroupsMap: computed(() => {
+      const groupMap = new Map<number, string[]>();
+      const guestMap = _allGuests();
+      tables().forEach(({ number, chairs }) => {
+        groupMap.set(
+          number,
+          chairs.map((id) => (id ? (guestMap.get(id)?.groupId ?? null) : null)).filter((groupId) => groupId !== null),
+        );
+      });
+      return groupMap;
     }),
   })),
   withMethods((state) => ({
@@ -61,7 +71,10 @@ export const WeddingStore = signalStore(
       return computed(() => state.tables().find((t) => t.number === number()) ?? null);
     },
     getGuest(guestId: Signal<string | null>): Signal<Guest | null> {
-      return computed(() => state.allGuests().find((g) => g.id === guestId()) ?? null);
+      return computed(() => {
+        const id = guestId();
+        return id ? (state._allGuests().get(id) ?? null) : null;
+      });
     },
     addTable() {
       const oldTables = state.tables();
@@ -128,7 +141,7 @@ export const WeddingStore = signalStore(
         }
       });
 
-      const allGuests = [...state.allGuests(), ...newGuest];
+      const allGuests = mappify([...state._allGuests().values(), ...newGuest], 'id');
       const guestIds = [...state.guestIds(), ...newGuest.map(({ id }) => id)];
 
       patchState(state, (oldState): Wedding => patchWeddingState(oldState, { guestIds, allGuests }));

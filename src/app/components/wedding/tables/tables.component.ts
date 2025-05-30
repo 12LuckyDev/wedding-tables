@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,5 +20,11 @@ export class TablesComponent {
 
   public onAddTable(): void {
     this._weddingStore.addTable();
+  }
+
+  constructor() {
+    effect(() => {
+      console.log(this._weddingStore.tablesGroupsMap());
+    });
   }
 }

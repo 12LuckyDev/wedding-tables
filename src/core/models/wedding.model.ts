@@ -3,6 +3,6 @@ import { Table } from './table.model';
 
 export interface Wedding {
   tables: Table[];
-  allGuests: Guest[];
+  _allGuests: Map<string, Guest>;
   guestIds: string[];
 }
