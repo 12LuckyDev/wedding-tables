@@ -58,10 +58,10 @@ export const WeddingStore = signalStore(
       const groupMap = new Map<number, string[]>();
       const guestMap = _allGuests();
       tables().forEach(({ number, chairs }) => {
-        groupMap.set(
-          number,
-          chairs.map((id) => (id ? (guestMap.get(id)?.groupId ?? null) : null)).filter((groupId) => groupId !== null),
-        );
+        const groupsIds = chairs
+          .map((id) => (id ? (guestMap.get(id)?.groupId ?? null) : null))
+          .filter((groupId) => groupId !== null);
+        groupMap.set(number, [...new Set(groupsIds)]);
       });
       return groupMap;
     }),
