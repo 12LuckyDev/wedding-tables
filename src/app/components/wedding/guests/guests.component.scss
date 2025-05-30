@@ -2,42 +2,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.example-container {
-  width: 400px;
-  max-width: 100%;
-  margin: 0 25px 25px 0;
-  display: inline-block;
-  vertical-align: top;
 }
 
 .guest-toolbar {
   flex: 0 0 auto;
-}
-
-.guest-list {
-  flex: 1 1 auto;
-  border: solid 1px #ccc;
-  min-height: 60px;
-  border-radius: 4px;
-  overflow: hidden;
-  display: block;
-  overflow-y: auto;
-}
-
-// copy in table
-.example-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
 }

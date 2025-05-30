@@ -5,22 +5,18 @@ import { ALL_GUESTS } from './wedding.test-data';
 import { calcFontContrast, uuidToHexColor } from '../../../core/helpers';
 import { computed, Signal } from '@angular/core';
 
-const addQuestToTable = (tables: Table[], guest: string, tableNumber: number, chairIndex: number): Table[] | null => {
+const changeQuestAtTable = (
+  tables: Table[],
+  guest: string | null,
+  tableNumber: number,
+  chairIndex: number,
+): Table[] | null => {
   const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
   if (tableIndex === -1) {
     return null;
   }
 
   return editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, guest, chairIndex), tableIndex);
-};
-
-const removeQuestFromTable = (tables: Table[], tableNumber: number, chairIndex: number): Table[] | null => {
-  const tableIndex = tables.findIndex(({ number }) => number === tableNumber);
-  if (tableIndex === -1) {
-    return null;
-  }
-
-  return editPropAt(tables, 'chairs', editAt(tables[tableIndex].chairs, null, chairIndex), tableIndex);
 };
 
 // TABLE SHOULD HAVE ONLY GUEST ID, AND FIND GUEST FROM LIST
@@ -69,7 +65,7 @@ export const WeddingStore = signalStore(
       );
     },
     moveGuestFromList(guest: Guest, tableNumber: number, chairIndex: number) {
-      const tables = addQuestToTable(state.tables(), guest.id, tableNumber, chairIndex);
+      const tables = changeQuestAtTable(state.tables(), guest.id, tableNumber, chairIndex);
       if (tables === null) {
         return;
       }
@@ -96,13 +92,13 @@ export const WeddingStore = signalStore(
         return;
       }
 
-      const tablesAfterAdd = addQuestToTable(state.tables(), guest.id, tableNumber, chairIndex);
+      const tablesAfterAdd = changeQuestAtTable(state.tables(), guest.id, tableNumber, chairIndex);
 
       if (tablesAfterAdd === null) {
         return;
       }
 
-      const tablesAfterRemove = removeQuestFromTable(tablesAfterAdd, previousTableNumber, previousChairIndex);
+      const tablesAfterRemove = changeQuestAtTable(tablesAfterAdd, null, previousTableNumber, previousChairIndex);
       if (tablesAfterRemove === null) {
         return;
       }
@@ -116,7 +112,7 @@ export const WeddingStore = signalStore(
       );
     },
     removeGuestFromTable(guest: Guest, index: number, previousTableNumber: number, previousChairIndex: number) {
-      const tables = removeQuestFromTable(state.tables(), previousTableNumber, previousChairIndex);
+      const tables = changeQuestAtTable(state.tables(), null, previousTableNumber, previousChairIndex);
       if (tables === null) {
         return;
       }
