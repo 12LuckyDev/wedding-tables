@@ -1,0 +1,9 @@
+@if (guest(); as existingGuest) {
+  @if (listPresentation()) {
+    <div class="example-box" [style]="existingGuest.color">
+      {{ existingGuest.name }}
+    </div>
+  } @else {
+    <span [style]="existingGuest.color"> {{ existingGuest.initials }} </span>
+  }
+}

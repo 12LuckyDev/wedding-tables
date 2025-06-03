@@ -20,15 +20,7 @@
     >
       {{ existingGuest.initials }}
       <ng-container *cdkDragPlaceholder>
-        @if (listPresentation()) {
-          <div class="example-box" [style]="existingGuest.color">
-            {{ existingGuest.name }}
-          </div>
-        } @else {
-          <span [style]="existingGuest.color">
-            {{ existingGuest.initials }}
-          </span>
-        }
+        <app-guest-drag-placeholder [guest]="existingGuest" />
       </ng-container>
     </span>
   }

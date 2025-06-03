@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { GuestModel } from '../../../core/models';
-import { buildColor, calcFontContrast, uuidToHexColor } from '../../../core/helpers';
+import { buildColor } from '../../../core/helpers';
 
 const PEOPLE = [
   'Bianca Dawson',

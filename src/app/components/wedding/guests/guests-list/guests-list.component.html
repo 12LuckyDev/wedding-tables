@@ -18,13 +18,7 @@
       {{ guest.name }}
       <span *cdkDragPreview [style]="guest.color">{{ guest.initials }}</span>
       <ng-container *cdkDragPlaceholder>
-        @if (listPresentation()) {
-          <div class="example-box" [style]="guest.color">
-            {{ guest.name }}
-          </div>
-        } @else {
-          <span [style]="guest.color"> {{ guest.initials }} </span>
-        }
+        <app-guest-drag-placeholder [guest]="guest" />
       </ng-container>
     </div>
   }

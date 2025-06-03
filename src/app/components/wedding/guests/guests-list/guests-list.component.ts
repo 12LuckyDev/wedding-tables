@@ -6,10 +6,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DragParentComponent } from '../../../../../core/abstractions/drag-parent.component';
+import { GuestDragPlaceholderComponent } from '../../guest-drag-placeholder/guest-drag-placeholder.component';
 
 @Component({
   selector: 'app-guests-list',
-  imports: [CdkDropList, CdkDrag, CdkDragPreview, CdkDragPlaceholder, MatToolbarModule, MatButtonModule, MatIconModule],
+  imports: [
+    CdkDropList,
+    CdkDrag,
+    CdkDragPreview,
+    CdkDragPlaceholder,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    GuestDragPlaceholderComponent,
+  ],
   templateUrl: './guests-list.component.html',
   styleUrl: './guests-list.component.scss',
 })
