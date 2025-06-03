@@ -6,10 +6,19 @@ import { CdkDrag, CdkDropList, CdkDragPlaceholder, CdkDragDrop } from '@angular/
 import { MatIconModule } from '@angular/material/icon';
 import { DragParentComponent } from '../../../../../../core/abstractions/drag-parent.component';
 import { GuestDragPlaceholderComponent } from '../../../guest-drag-placeholder/guest-drag-placeholder.component';
+import { GuestChairItemComponent } from '../../../guest-chair-item/guest-chair-item.component';
 
 @Component({
   selector: 'app-chair',
-  imports: [MatButtonModule, MatIconModule, CdkDrag, CdkDropList, CdkDragPlaceholder, GuestDragPlaceholderComponent],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    CdkDrag,
+    CdkDropList,
+    CdkDragPlaceholder,
+    GuestDragPlaceholderComponent,
+    GuestChairItemComponent,
+  ],
   templateUrl: './chair.component.html',
   styleUrl: './chair.component.scss',
 })

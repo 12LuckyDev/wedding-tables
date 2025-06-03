@@ -52,25 +52,5 @@
 }
 
 .chair-wrapper {
-  height: var(--chair-size);
-  width: var(--chair-size);
-  box-sizing: border-box;
-  border: solid 1px #ccc;
-  border-radius: 50%;
   position: absolute;
-}
-
-// copy in guests
-.example-box {
-  padding: 20px 10px;
-  border-bottom: solid 1px #ccc;
-  color: rgba(0, 0, 0, 0.87);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: move;
-  background: white;
-  font-size: 14px;
 }

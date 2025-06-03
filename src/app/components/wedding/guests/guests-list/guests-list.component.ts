@@ -7,6 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DragParentComponent } from '../../../../../core/abstractions/drag-parent.component';
 import { GuestDragPlaceholderComponent } from '../../guest-drag-placeholder/guest-drag-placeholder.component';
+import { GuestListItemComponent } from '../../guest-list-item/guest-list-item.component';
+import { GuestChairItemComponent } from '../../guest-chair-item/guest-chair-item.component';
 
 @Component({
   selector: 'app-guests-list',
@@ -19,6 +21,8 @@ import { GuestDragPlaceholderComponent } from '../../guest-drag-placeholder/gues
     MatButtonModule,
     MatIconModule,
     GuestDragPlaceholderComponent,
+    GuestListItemComponent,
+    GuestChairItemComponent,
   ],
   templateUrl: './guests-list.component.html',
   styleUrl: './guests-list.component.scss',

@@ -7,8 +7,8 @@
   [cdkDropListEnterPredicate]="dropPredicate"
 >
   @if (guest(); as existingGuest) {
-    <span
-      [style]="existingGuest.color"
+    <app-guest-chair-item
+      [guest]="existingGuest"
       cdkDrag
       [cdkDragData]="{
         guest: existingGuest,
@@ -18,10 +18,7 @@
       (cdkDragStarted)="dragStart($event)"
       (cdkDragReleased)="dragReleased()"
     >
-      {{ existingGuest.initials }}
-      <ng-container *cdkDragPlaceholder>
-        <app-guest-drag-placeholder [guest]="existingGuest" />
-      </ng-container>
-    </span>
+      <app-guest-drag-placeholder *cdkDragPlaceholder [guest]="existingGuest" />
+    </app-guest-chair-item>
   }
 </div>

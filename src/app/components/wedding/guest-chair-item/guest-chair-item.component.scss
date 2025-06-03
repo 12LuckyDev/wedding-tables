@@ -1,10 +1,10 @@
-.chair {
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: var(--chair-size);
   width: var(--chair-size);
   box-sizing: border-box;
   border: solid 1px #ccc;
   border-radius: 50%;
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
 }

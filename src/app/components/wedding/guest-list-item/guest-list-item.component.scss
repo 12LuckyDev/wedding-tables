@@ -1,0 +1,13 @@
+.guest-item {
+  height: var(--guest-item-height);
+  border-bottom: solid 1px #ccc;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  cursor: move;
+}
+
+.item-icon {
+  margin-inline: 10px;
+}
