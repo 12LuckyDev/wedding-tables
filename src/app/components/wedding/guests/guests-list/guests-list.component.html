@@ -11,6 +11,8 @@
       class="example-box"
       cdkDrag
       [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }"
+      (cdkDragStarted)="dragStart($event)"
+      (cdkDragReleased)="dragReleased()"
       [style]="{ backgroundColor: guest.bgColor, color: guest.color }"
     >
       {{ guest.name }}

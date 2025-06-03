@@ -5,6 +5,7 @@ import { WeddingStore } from '../../wedding.store';
 import { Table, Guest } from '../../../../../core/models';
 import { ChairComponent } from './chair/chair.component';
 import { nMap } from '@12luckydev/utils';
+import { WeddingDragStore } from '../../wedding-drag.store';
 
 @Component({
   selector: 'app-table',
@@ -14,9 +15,11 @@ import { nMap } from '@12luckydev/utils';
 })
 export class TableComponent {
   private readonly _weddingStore = inject(WeddingStore);
+  private readonly _weddingDragStore = inject(WeddingDragStore);
 
   public readonly tableNumber = input<number>();
   public readonly table: Signal<Table | null> = this._weddingStore.getTable(this.tableNumber);
+  public readonly tableColor: Signal<string | null> = this._weddingDragStore.getTableColor(this.tableNumber);
 
   public readonly transforms: Signal<string[]> = computed(() => {
     const amount = this.table()?.chairs?.length ?? 0;

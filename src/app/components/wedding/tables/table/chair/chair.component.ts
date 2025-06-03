@@ -7,6 +7,7 @@ import { CdkDrag, CdkDropList, CdkDragPlaceholder, CdkDragDrop } from '@angular/
 import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
+import { DragParentComponent } from '../../../../../../core/abstractions/drag-parent.component';
 
 @Component({
   selector: 'app-chair',
@@ -14,7 +15,7 @@ import { Observable } from 'rxjs';
   templateUrl: './chair.component.html',
   styleUrl: './chair.component.scss',
 })
-export class ChairComponent {
+export class ChairComponent extends DragParentComponent {
   private readonly _weddingStore = inject(WeddingStore);
   private readonly _weddingService = inject(WeddingService);
 

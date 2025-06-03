@@ -1,4 +1,4 @@
-export const uuidToHexColor = (uuid?: string): string => {
+export const uuidToHexColor = (uuid?: string | null): string => {
   if (!uuid) {
     return 'transparent';
   }

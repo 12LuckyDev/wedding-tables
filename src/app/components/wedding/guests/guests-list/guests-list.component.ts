@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable } from 'rxjs';
+import { DragParentComponent } from '../../../../../core/abstractions/drag-parent.component';
 
 @Component({
   selector: 'app-guests-list',
@@ -24,8 +25,9 @@ import { Observable } from 'rxjs';
   templateUrl: './guests-list.component.html',
   styleUrl: './guests-list.component.scss',
 })
-export class GuestsListComponent {
+export class GuestsListComponent extends DragParentComponent {
   private readonly _weddingStore = inject(WeddingStore);
+
   private readonly _weddingService = inject(WeddingService);
 
   public readonly guests: Signal<Guest[]> = this._weddingStore.guests;
