@@ -2,7 +2,7 @@ import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { WeddingStore } from '../../wedding.store';
-import { Table, Guest } from '../../../../../core/models';
+import { Table, Guest, Color } from '../../../../../core/models';
 import { ChairComponent } from './chair/chair.component';
 import { nMap } from '@12luckydev/utils';
 import { WeddingDragStore } from '../../wedding-drag.store';
@@ -19,7 +19,7 @@ export class TableComponent {
 
   public readonly tableNumber = input<number>();
   public readonly table: Signal<Table | null> = this._weddingStore.getTable(this.tableNumber);
-  public readonly tableColor: Signal<string> = this._weddingDragStore.getTableColor(this.tableNumber);
+  public readonly tableColor: Signal<Color> = this._weddingDragStore.getTableColor(this.tableNumber);
 
   public readonly transforms: Signal<string[]> = computed(() => {
     const amount = this.table()?.chairs?.length ?? 0;

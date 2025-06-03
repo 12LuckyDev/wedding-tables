@@ -1,6 +1,6 @@
 <!-- <div class="table-container" cdkDragBoundary=".tables-container" cdkDrag> -->
 <div class="table-container">
-  <div class="table" [style]="{ background: tableColor() }">
+  <div class="table" [style]="tableColor()">
     {{ tableNumber() }}
     <button mat-icon-button aria-label="Add table button" class="danger-button" (click)="onDeleteTable()">
       <mat-icon>delete</mat-icon>

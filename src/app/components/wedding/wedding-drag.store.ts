@@ -1,8 +1,8 @@
 import { computed, inject, Signal } from '@angular/core';
 import { signalStore, withProps, withState, withMethods, patchState } from '@ngrx/signals';
 import { WeddingStore } from './wedding.store';
-import { GuestDragData } from '../../../core/models';
-import { uuidToHexColor } from '../../../core/helpers';
+import { Color, GuestDragData } from '../../../core/models';
+import { buildColor } from '../../../core/helpers';
 import { CdkDragStart } from '@angular/cdk/drag-drop';
 
 interface WeddingDragData {
@@ -17,16 +17,15 @@ export const WeddingDragStore = signalStore(
     weddingStore: inject(WeddingStore),
   })),
   withMethods((state) => ({
-    getTableColor(number: Signal<number | undefined>): Signal<string> {
+    getTableColor(number: Signal<number | undefined>): Signal<Color> {
       return computed(() => {
         const tableNumber = number();
         const currentGroupId = state.currentGroupId();
         if (tableNumber === undefined || currentGroupId === null) {
-          return uuidToHexColor(null);
+          return buildColor(null);
         }
-        return state.weddingStore.tablesGroupsMap().get(tableNumber)?.includes(currentGroupId)
-          ? uuidToHexColor(currentGroupId)
-          : uuidToHexColor(null);
+        const includes = state.weddingStore.tablesGroupsMap().get(tableNumber)?.includes(currentGroupId) ?? false;
+        return buildColor(includes ? currentGroupId : null);
       });
     },
     dragStart(event: CdkDragStart<GuestDragData>) {

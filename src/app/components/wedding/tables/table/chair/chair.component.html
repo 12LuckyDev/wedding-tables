@@ -8,7 +8,7 @@
 >
   @if (guest(); as existingGuest) {
     <span
-      [style]="{ backgroundColor: existingGuest.bgColor, color: existingGuest.color }"
+      [style]="existingGuest.color"
       cdkDrag
       [cdkDragData]="{
         guest: existingGuest,
@@ -21,11 +21,11 @@
       {{ existingGuest.initials }}
       <ng-container *cdkDragPlaceholder>
         @if (listPresentation()) {
-          <div class="example-box" [style]="{ backgroundColor: existingGuest.bgColor, color: existingGuest.color }">
+          <div class="example-box" [style]="existingGuest.color">
             {{ existingGuest.name }}
           </div>
         } @else {
-          <span [style]="{ backgroundColor: existingGuest.bgColor, color: existingGuest.color }">
+          <span [style]="existingGuest.color">
             {{ existingGuest.initials }}
           </span>
         }

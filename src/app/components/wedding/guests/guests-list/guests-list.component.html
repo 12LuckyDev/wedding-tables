@@ -13,17 +13,17 @@
       [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }"
       (cdkDragStarted)="dragStart($event)"
       (cdkDragReleased)="dragReleased()"
-      [style]="{ backgroundColor: guest.bgColor, color: guest.color }"
+      [style]="guest.color"
     >
       {{ guest.name }}
-      <span *cdkDragPreview [style]="{ backgroundColor: guest.bgColor, color: guest.color }">{{ guest.initials }}</span>
+      <span *cdkDragPreview [style]="guest.color">{{ guest.initials }}</span>
       <ng-container *cdkDragPlaceholder>
         @if (listPresentation()) {
-          <div class="example-box" [style]="{ backgroundColor: guest.bgColor, color: guest.color }">
+          <div class="example-box" [style]="guest.color">
             {{ guest.name }}
           </div>
         } @else {
-          <span [style]="{ backgroundColor: guest.bgColor, color: guest.color }"> {{ guest.initials }} </span>
+          <span [style]="guest.color"> {{ guest.initials }} </span>
         }
       </ng-container>
     </div>

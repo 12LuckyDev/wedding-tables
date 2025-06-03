@@ -2,7 +2,7 @@ import { editAt, editPropAt, mappify, move, nMap } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType } from '../../../core/models';
 import { ALL_GUESTS } from './wedding.test-data';
-import { calcFontContrast, uuidToHexColor } from '../../../core/helpers';
+import { buildColor } from '../../../core/helpers';
 import { computed, Signal } from '@angular/core';
 
 const changeQuestAtTable = (
@@ -131,9 +131,7 @@ export const WeddingStore = signalStore(
           case GroupImportType.newGroup:
           case GroupImportType.existingGroup: //TODO add group to existing guests
             const [groupId] = group.groupIds;
-            const bgColor = uuidToHexColor(groupId);
-            const color = calcFontContrast(bgColor);
-            group.newGuests.forEach((g) => newGuest.push({ ...g, groupId, bgColor, color }));
+            group.newGuests.forEach((g) => newGuest.push({ ...g, groupId, color: buildColor(groupId) }));
             break;
           case GroupImportType.manyGroups:
             //TODO
