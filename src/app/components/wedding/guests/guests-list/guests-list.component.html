@@ -12,7 +12,6 @@
       [cdkDragData]="{ guest: guest, tableNumber: null, chairIndex: null }"
       (cdkDragStarted)="dragStart($event)"
       (cdkDragReleased)="dragReleased()"
-      [style]="guest.color"
     >
       <app-guest-list-item [guest]="guest" />
       <app-guest-chair-item *cdkDragPreview [guest]="guest" />

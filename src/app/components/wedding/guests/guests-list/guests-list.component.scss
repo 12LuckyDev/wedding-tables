@@ -8,3 +8,7 @@
 .guest-list {
   overflow-y: auto;
 }
+
+.cdk-drag-placeholder {
+  height: var(--guest-item-height);
+}
