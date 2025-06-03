@@ -1,22 +1,23 @@
 import { computed, inject, Signal } from '@angular/core';
 import { signalStore, withProps, withState, withMethods, patchState } from '@ngrx/signals';
 import { WeddingStore } from './wedding.store';
-import { Guest, GuestDragData } from '../../../core/models';
+import { GuestDragData } from '../../../core/models';
 import { uuidToHexColor } from '../../../core/helpers';
 import { CdkDragStart } from '@angular/cdk/drag-drop';
 
 interface WeddingDragData {
   currentGroupId: string | null;
+  listPresentation: boolean;
 }
 
 export const WeddingDragStore = signalStore(
   { providedIn: 'root' },
-  withState<WeddingDragData>({ currentGroupId: null }),
+  withState<WeddingDragData>({ currentGroupId: null, listPresentation: true }),
   withProps(() => ({
     weddingStore: inject(WeddingStore),
   })),
   withMethods((state) => ({
-    getTableColor(number: Signal<number | undefined>): Signal<string | null> {
+    getTableColor(number: Signal<number | undefined>): Signal<string> {
       return computed(() => {
         const tableNumber = number();
         const currentGroupId = state.currentGroupId();
@@ -28,17 +29,23 @@ export const WeddingDragStore = signalStore(
           : uuidToHexColor(null);
       });
     },
-    dragStart({ source }: CdkDragStart<GuestDragData>) {
-      const groupId = source.data.guest.groupId ?? null;
-      const currentGroupId = state.currentGroupId();
-      if (currentGroupId !== groupId) {
-        patchState(state, (oldState): WeddingDragData => ({ ...oldState, currentGroupId: groupId }));
+    dragStart(event: CdkDragStart<GuestDragData>) {
+      const { guest, tableNumber } = event.source.data;
+      const currentGroupId = guest.groupId ?? null;
+      const listPresentation = tableNumber === null;
+      if (state.currentGroupId() !== currentGroupId || listPresentation !== state.listPresentation()) {
+        patchState(state, (oldState): WeddingDragData => ({ ...oldState, currentGroupId, listPresentation }));
       }
     },
     dragReleased() {
       const currentGroupId = state.currentGroupId();
       if (currentGroupId !== null) {
         patchState(state, (oldState): WeddingDragData => ({ ...oldState, currentGroupId: null }));
+      }
+    },
+    dropListEntered(listPresentation: boolean) {
+      if (listPresentation !== state.listPresentation()) {
+        patchState(state, (oldState): WeddingDragData => ({ ...oldState, listPresentation }));
       }
     },
   })),

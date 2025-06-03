@@ -1,8 +1,5 @@
 import { Component, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../wedding.store';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { WeddingService } from '../weddings.service';
-import { Observable } from 'rxjs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

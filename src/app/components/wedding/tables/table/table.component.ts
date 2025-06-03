@@ -19,7 +19,7 @@ export class TableComponent {
 
   public readonly tableNumber = input<number>();
   public readonly table: Signal<Table | null> = this._weddingStore.getTable(this.tableNumber);
-  public readonly tableColor: Signal<string | null> = this._weddingDragStore.getTableColor(this.tableNumber);
+  public readonly tableColor: Signal<string> = this._weddingDragStore.getTableColor(this.tableNumber);
 
   public readonly transforms: Signal<string[]> = computed(() => {
     const amount = this.table()?.chairs?.length ?? 0;

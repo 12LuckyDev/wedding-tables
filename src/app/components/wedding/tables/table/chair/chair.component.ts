@@ -1,31 +1,27 @@
 import { Component, inject, input, Signal } from '@angular/core';
 import { Guest, GuestDragData } from '../../../../../../core/models';
 import { WeddingStore } from '../../../wedding.store';
-import { WeddingService } from '../../../weddings.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkDrag, CdkDropList, CdkDragPlaceholder, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { Observable } from 'rxjs';
 import { DragParentComponent } from '../../../../../../core/abstractions/drag-parent.component';
 
 @Component({
   selector: 'app-chair',
-  imports: [MatButtonModule, MatIconModule, CdkDrag, CdkDropList, CdkDragPlaceholder, AsyncPipe],
+  imports: [MatButtonModule, MatIconModule, CdkDrag, CdkDropList, CdkDragPlaceholder],
   templateUrl: './chair.component.html',
   styleUrl: './chair.component.scss',
 })
 export class ChairComponent extends DragParentComponent {
   private readonly _weddingStore = inject(WeddingStore);
-  private readonly _weddingService = inject(WeddingService);
 
   public readonly tableNumber = input<number>();
   public readonly chairIndex = input<number>();
   public readonly guestId = input<string | null>(null);
   public readonly guest: Signal<Guest | null> = this._weddingStore.getGuest(this.guestId);
 
-  public get dragHoverType$(): Observable<boolean> {
-    return this._weddingService.dragHoverType$;
+  public override get componentListPresentation(): boolean {
+    return false;
   }
 
   public dropPredicate(_drag: unknown, drop: CdkDropList): boolean {
@@ -52,9 +48,5 @@ export class ChairComponent extends DragParentComponent {
         previousChairIndex,
       );
     }
-  }
-
-  public onListEntered(): void {
-    this._weddingService.changeHoverType(true);
   }
 }
