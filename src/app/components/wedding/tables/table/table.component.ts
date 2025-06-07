@@ -32,10 +32,15 @@ export class TableComponent {
 
   public guest: Guest[] = [];
 
+  public onAddChair(): void {
+    this._weddingStore.addChair(this.tableNumber);
+  }
+
+  public odRemoveChair(): void {
+    this._weddingStore.removeChair(this.tableNumber);
+  }
+
   public onDeleteTable(): void {
-    const tableNumber = this.tableNumber() ?? null;
-    if (tableNumber !== null) {
-      this._weddingStore.removeTable(tableNumber);
-    }
+    this._weddingStore.removeTable(this.tableNumber);
   }
 }

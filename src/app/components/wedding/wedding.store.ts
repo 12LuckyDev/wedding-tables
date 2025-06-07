@@ -1,6 +1,6 @@
-import { editAt, editPropAt, mappify, move, nMap } from '@12luckydev/utils';
+import { editAt, editPropAt, mappify, move, nMap, popAt, popByProp, removeAt } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType } from '../../../core/models';
+import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType, TableModel } from '../../../core/models';
 import { ALL_GUESTS } from './wedding.test-data';
 import { buildColor } from '../../../core/helpers';
 import { computed, Signal } from '@angular/core';
@@ -78,19 +78,66 @@ export const WeddingStore = signalStore(
     },
     addTable() {
       const oldTables = state.tables();
-      const tables = [
-        ...oldTables,
-        {
-          number: oldTables.length + 1,
-          size: 12,
-          chairs: nMap(12, () => null),
-        },
-      ];
+      const tableNumbers = oldTables.map(({ number }) => number);
+      let tableNumber = 1;
+      while (true) {
+        if (!tableNumbers.includes(tableNumber)) {
+          break;
+        }
+        tableNumber++;
+      }
+
+      const tables = [...oldTables, new TableModel(tableNumber)];
       patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables }));
     },
-    removeTable(table: number) {
-      const tables = state.tables().filter((t) => t.number !== table);
-      patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables }));
+    removeTable(tableNumber: Signal<number | undefined>) {
+      const number = tableNumber();
+      if (number) {
+        const [table, tables] = popByProp(state.tables(), 'number', number, true);
+        const tableGuestIds = table ? table.chairs.filter((id) => id !== null) : [];
+        patchState(
+          state,
+          (oldState): Wedding =>
+            patchWeddingState(
+              oldState,
+              tableGuestIds.length > 0 ? { tables, guestIds: [...state.guestIds(), ...tableGuestIds] } : { tables },
+            ),
+        );
+      }
+    },
+    addChair(tableNumber: Signal<number | undefined>) {
+      const tableIndex = state.tables().findIndex((t) => t.number === tableNumber()) ?? null;
+      if (tableIndex > -1) {
+        const { chairs } = state.tables()[tableIndex];
+        const tables = editPropAt(state.tables(), 'chairs', [...chairs, null], tableIndex);
+        patchState(state, (oldState): Wedding => patchWeddingState(oldState, { tables }));
+      }
+    },
+    removeChair(tableNumber: Signal<number | undefined>) {
+      const tableIndex = state.tables().findIndex((t) => t.number === tableNumber()) ?? null;
+      if (tableIndex > -1) {
+        const { chairs } = state.tables()[tableIndex];
+        const emptyChairIndex = chairs.lastIndexOf(null);
+        if (emptyChairIndex > -1) {
+          patchState(
+            state,
+            (oldState): Wedding =>
+              patchWeddingState(oldState, {
+                tables: editPropAt(state.tables(), 'chairs', removeAt(chairs, emptyChairIndex), tableIndex),
+              }),
+          );
+        } else {
+          const [guestId, newChairs] = popAt(chairs, chairs.length - 1);
+          patchState(
+            state,
+            (oldState): Wedding =>
+              patchWeddingState(oldState, {
+                tables: editPropAt(state.tables(), 'chairs', newChairs, tableIndex),
+                guestIds: guestId ? [...state.guestIds(), guestId] : state.guestIds(),
+              }),
+          );
+        }
+      }
     },
     moveGuestFromList({ id }: Guest, tableNumber: number, chairIndex: number) {
       const tables = changeQuestAtTable(state.tables(), id, tableNumber, chairIndex);

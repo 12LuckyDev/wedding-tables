@@ -2,9 +2,18 @@
 <div class="table-container">
   <div class="table" [style]="tableColor()">
     {{ tableNumber() }}
-    <button mat-icon-button aria-label="Add table button" class="danger-button" (click)="onDeleteTable()">
-      <mat-icon>delete</mat-icon>
-    </button>
+
+    <div>
+      <button mat-icon-button aria-label="Remove chair button" (click)="odRemoveChair()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Add table button" class="danger-button" (click)="onDeleteTable()">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="Add chair button" (click)="onAddChair()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
   </div>
 
   @for (guestId of table()?.chairs; let index = $index; track index) {
