@@ -27,7 +27,6 @@ export class GuestsComponent {
 
     if (file) {
       const guestsToImport = await guestsImport(file, this.guests());
-      console.log(guestsToImport);
       const dialogRef = this._dialog.open(ImportSummaryDialogComponent, {
         width: '1200px',
         data: { guestsToImport },

@@ -11,31 +11,44 @@
 
 <h2 mat-dialog-title>Guests import summary</h2>
 <mat-dialog-content>
-  @for (group of groups; track $index) {
+  <form [formGroup]="groupsForm">
+    @for (group of groups; let index = $index; track index) {
+      <mat-card appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>
+            {{ getGroupTitle(group) }}
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ getGroupSubtitle(group) }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          @if (getGroupOptions(index); as options) {
+            <mat-form-field>
+              <mat-label>Group</mat-label>
+              <mat-select [formControlName]="index">
+                @for (option of options; track option.id) {
+                  <mat-option [value]="option.id">{{ option.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+          <ng-container *ngTemplateOutlet="guestsList; context: { guests: group.newGuests }"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    }
     <mat-card appearance="outlined">
       <mat-card-header>
-        <mat-card-title>
-          {{ getGroupTitle(group) }}
-        </mat-card-title>
-        <mat-card-subtitle>
-          {{ getGroupSubtitle(group) }}
-        </mat-card-subtitle>
+        <mat-card-title> New Single Guests</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <ng-container *ngTemplateOutlet="guestsList; context: { guests: group.newGuests }"></ng-container>
+        <ng-container *ngTemplateOutlet="guestsList; context: { guests: newSingleGuests }"></ng-container>
       </mat-card-content>
     </mat-card>
-  }
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <mat-card-title> New Single Guests</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <ng-container *ngTemplateOutlet="guestsList; context: { guests: newSingleGuests }"></ng-container>
-    </mat-card-content>
-  </mat-card>
+  </form>
 </mat-dialog-content>
+
 <mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>
-  <button mat-button (click)="accept()">Accept</button>
+  <button mat-button (click)="accept()" [disabled]="!isValid">Accept</button>
 </mat-dialog-actions>

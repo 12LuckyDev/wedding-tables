@@ -20,11 +20,15 @@ const PEOPLE = [
 
 const groupId = uuidv4();
 
-export const ALL_GUESTS: GuestModel[] = PEOPLE.map((name) => {
+export const ALL_GUESTS: GuestModel[] = PEOPLE.map((name, index) => {
   const model = new GuestModel(name);
-  if (Math.random() < 0.5) {
+  if (index === 0 || index === 1) {
+    model.groupId = uuidv4();
+    model.color = buildColor(model.groupId);
+  } else if (Math.random() < 0.5) {
     model.groupId = groupId;
     model.color = buildColor(groupId);
   }
+
   return model;
 });

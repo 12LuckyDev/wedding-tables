@@ -1,4 +1,4 @@
-import { GroupImportType, Guest, GuestImportSummaryModel, Wedding } from '../../models';
+import { GroupImportSummaryModel, Guest, GuestImportSummaryModel, Wedding } from '../../models';
 import { buildColor } from '../../helpers';
 
 const assingExistingGuestsToGroup = (guestMap: Map<string, Guest>, groupId: string, possibleGroupsGuests: Guest[]) => {
@@ -16,17 +16,11 @@ export const importGuest = (oldState: Wedding, { groups, newSingleGuests }: Gues
   const newGuest = [...newSingleGuests];
   const newAllGuests = new Map(oldAllGuest);
 
-  groups.forEach((group) => {
-    switch (group.type) {
-      case GroupImportType.newGroup:
-      case GroupImportType.existingGroup: //TODO add group to existing guests
-        const [groupId] = group.groupIds;
-        group.newGuests.forEach((g) => newGuest.push({ ...g, groupId, color: buildColor(groupId) }));
-        assingExistingGuestsToGroup(newAllGuests, groupId, group.existingGuests);
-        break;
-      case GroupImportType.manyGroups:
-        //TODO
-        break;
+  groups.forEach(({ groupIds, newGuests, existingGuests }: GroupImportSummaryModel) => {
+    const [groupId] = groupIds;
+    newGuests.forEach((g) => newGuest.push({ ...g, groupId, color: buildColor(groupId) }));
+    if (groupId) {
+      assingExistingGuestsToGroup(newAllGuests, groupId, existingGuests);
     }
   });
 
