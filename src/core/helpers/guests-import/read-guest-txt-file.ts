@@ -1,7 +1,8 @@
 import { Guest, GuestModel } from '../../models';
 import { readFileContent } from './read-file-content';
+import { ReadGuestFileType } from './read-guest-file.type';
 
-export const readGuestTxtFile = async (file: File): Promise<Guest[][]> => {
+export const readGuestTxtFile: ReadGuestFileType = async (file: File): Promise<Guest[][]> => {
   const content = await readFileContent(file);
   const splited = content.split('\n');
 
