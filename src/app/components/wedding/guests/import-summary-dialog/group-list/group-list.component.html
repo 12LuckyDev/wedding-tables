@@ -1,0 +1,13 @@
+<mat-list>
+  @for (guest of guests; track guest.id; let last = $last) {
+    <mat-list-item>
+      <span [ngClass]="{ 'not-selected-group': guest.notSelected }"> {{ guest.name }} </span> {{ guest.info }}
+      <mat-icon matListItemIcon aria-hidden="false" aria-label="Person icon" class="item-icon">{{
+        guest.icon
+      }}</mat-icon>
+    </mat-list-item>
+    @if (!last) {
+      <mat-divider></mat-divider>
+    }
+  }
+</mat-list>

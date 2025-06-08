@@ -1,19 +1,8 @@
-<ng-template #guestsList let-guests="guests">
-  <mat-list>
-    @for (quest of guests; track quest.id; let last = $last) {
-      <mat-list-item>{{ quest.name }}</mat-list-item>
-      @if (!last) {
-        <mat-divider></mat-divider>
-      }
-    }
-  </mat-list>
-</ng-template>
-
 <h2 mat-dialog-title>Guests import summary</h2>
 <mat-dialog-content>
   <form [formGroup]="groupsForm">
     @for (group of groups; let index = $index; track index) {
-      <mat-card appearance="outlined">
+      <mat-card appearance="outlined" class="group-card">
         <mat-card-header>
           <mat-card-title>
             {{ getGroupTitle(group) }}
@@ -24,7 +13,7 @@
         </mat-card-header>
         <mat-card-content>
           @if (getGroupOptions(index); as options) {
-            <mat-form-field>
+            <mat-form-field class="group-select-field">
               <mat-label>Group</mat-label>
               <mat-select [formControlName]="index">
                 @for (option of options; track option.id) {
@@ -33,16 +22,17 @@
               </mat-select>
             </mat-form-field>
           }
-          <ng-container *ngTemplateOutlet="guestsList; context: { guests: group.newGuests }"></ng-container>
+          <app-group-list [group]="group" [groupId]="getSelectedGroupId(index)" />
         </mat-card-content>
       </mat-card>
     }
     <mat-card appearance="outlined">
       <mat-card-header>
         <mat-card-title> New Single Guests</mat-card-title>
+        <mat-card-subtitle> They will be added without a group </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <ng-container *ngTemplateOutlet="guestsList; context: { guests: newSingleGuests }"></ng-container>
+        <app-group-list [group]="newSingleGuests" />
       </mat-card-content>
     </mat-card>
   </form>
@@ -50,5 +40,5 @@
 
 <mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>
-  <button mat-button (click)="accept()" [disabled]="!isValid">Accept</button>
+  <button id="accept" mat-button (click)="accept()" [disabled]="!isValid">Accept</button>
 </mat-dialog-actions>

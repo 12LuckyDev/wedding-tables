@@ -4,14 +4,13 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
-import { NgTemplateOutlet } from '@angular/common';
 import { WeddingStore } from '../../../../../core/stores';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { v4 as uuidv4 } from 'uuid';
+import { GroupListComponent } from './group-list/group-list.component';
 
 @Component({
   selector: 'app-import-summary-dialog',
@@ -20,11 +19,10 @@ import { v4 as uuidv4 } from 'uuid';
     MatDialogModule,
     MatCardModule,
     MatDividerModule,
-    MatListModule,
-    NgTemplateOutlet,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    GroupListComponent,
     ReactiveFormsModule,
   ],
   templateUrl: './import-summary-dialog.component.html',
@@ -77,6 +75,10 @@ export class ImportSummaryDialogComponent {
     return this._groupsForm.valid;
   }
 
+  public getSelectedGroupId(index: number): string | null {
+    return this._groupsForm.get(index.toString())?.value ?? null;
+  }
+
   public getGroupTitle(group: GroupImportSummaryModel): string {
     switch (group.type) {
       case GroupImportType.newGroup:
@@ -88,14 +90,15 @@ export class ImportSummaryDialogComponent {
     }
   }
 
-  // TODO write guest without group and combinated guests groups
-  public getGroupSubtitle(group: GroupImportSummaryModel): string | null {
-    if (group.type === GroupImportType.newGroup) {
-      return null;
+  public getGroupSubtitle({ type }: GroupImportSummaryModel): string {
+    switch (type) {
+      case GroupImportType.newGroup:
+        return 'They will be added without a group';
+      case GroupImportType.existingGroup:
+        return `Added to existing group`;
+      case GroupImportType.manyGroups:
+        return 'Please select one group';
     }
-    const compatible: string[] = group.possibleGroupsGuests.map(({ name }) => name);
-
-    return `Compatible with: ${compatible.join(', ')}`;
   }
 
   public getGroupOptions(index: number): { id: string; label: string }[] | null {
@@ -115,7 +118,6 @@ export class ImportSummaryDialogComponent {
       }),
     };
 
-    console.log(result);
     this._weddingStore.importGuests(result);
     this._dialogRef.close();
   }

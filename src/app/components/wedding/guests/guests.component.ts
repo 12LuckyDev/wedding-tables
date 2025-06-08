@@ -28,7 +28,10 @@ export class GuestsComponent {
     if (file) {
       const guestsToImport = await guestsImport(file, this.guests());
       const dialogRef = this._dialog.open(ImportSummaryDialogComponent, {
-        width: '1200px',
+        minWidth: 0,
+        maxWidth: '100%',
+        width: '60vw',
+        autoFocus: '#accept',
         data: { guestsToImport },
       });
 
