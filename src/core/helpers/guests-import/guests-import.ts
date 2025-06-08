@@ -1,19 +1,19 @@
-import { GroupImportSummaryModel, GroupImportType, Guest, GuestImportSummaryModel, GuestModel } from '../models';
-import { readGuestFile } from './read-guest-file';
+import { GroupImportSummaryModel, GroupImportType, Guest, GuestImportSummaryModel } from '../../models';
+import { readGuestTxtFile } from './read-guest-txt-file';
 import { v4 as uuidv4 } from 'uuid';
 
 export const guestsImport = async (file: File, guests: Guest[]): Promise<GuestImportSummaryModel> => {
   const summary: GuestImportSummaryModel = { groups: [], newSingleGuests: [], existingSingleGuests: [] };
 
-  const newGuests: string[][] = await readGuestFile(file);
+  const newGuests: Guest[][] = await readGuestTxtFile(file);
 
-  newGuests.forEach((guestsRow: string[]) => {
+  newGuests.forEach((guestsRow: Guest[]) => {
     if (guestsRow.length === 1) {
-      const existed = guests.find(({ name }) => name === guestsRow[0]);
+      const existed = guests.find(({ name }) => name === guestsRow[0].name);
       if (existed) {
         summary.existingSingleGuests.push(existed);
       } else {
-        summary.newSingleGuests.push(new GuestModel(guestsRow[0]));
+        summary.newSingleGuests.push(guestsRow[0]);
       }
       return;
     }
@@ -22,10 +22,10 @@ export const guestsImport = async (file: File, guests: Guest[]): Promise<GuestIm
     const existingGuests: Guest[] = [];
     const possibleGroupsGuests: Guest[] = [];
 
-    guestsRow.forEach((guestName) => {
-      const existed = guests.find(({ name }) => name === guestName);
+    guestsRow.forEach((guest) => {
+      const existed = guests.find(({ name }) => name === guest.name);
       if (!existed) {
-        newGuests.push(new GuestModel(guestName));
+        newGuests.push(guest);
         return;
       }
 

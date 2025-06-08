@@ -1,5 +1,4 @@
-export * from './read-guest-file';
-export * from './guests-import';
+export * from './guests-import/guests-import';
 
 export * from './colors/build-color';
 export * from './colors/calc-font-contrast';
