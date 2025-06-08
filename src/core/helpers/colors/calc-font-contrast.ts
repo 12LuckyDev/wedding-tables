@@ -1,5 +1,5 @@
 export const calcFontContrast = (hexcolor: string): string => {
-  if (hexcolor === 'transparent') {
+  if (hexcolor === '#ffffff') {
     return '#000000';
   }
 
@@ -11,5 +11,5 @@ export const calcFontContrast = (hexcolor: string): string => {
 
   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
 
-  return yiq >= 128 ? '#000000' : '#FFFFFF';
+  return yiq >= 128 ? '#000000' : '#ffffff';
 };
