@@ -1,5 +1,4 @@
 import { Component, inject, Signal } from '@angular/core';
-import { WeddingStore } from '../wedding.store';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +7,7 @@ import { guestsImport } from '../../../../core/helpers';
 import { MatDialog } from '@angular/material/dialog';
 import { ImportSummaryDialogComponent } from './import-summary-dialog/import-summary-dialog.component';
 import { GuestsListComponent } from './guests-list/guests-list.component';
+import { WeddingStore } from '../../../../core/stores';
 
 @Component({
   selector: 'app-guests',

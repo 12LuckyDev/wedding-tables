@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { WeddingDragStore } from '../../app/components/wedding/wedding-drag.store';
+import { WeddingDragStore } from '../stores/wedding-drag.store';
 import { CdkDragStart } from '@angular/cdk/drag-drop';
 import { GuestDragData } from '../models';
 

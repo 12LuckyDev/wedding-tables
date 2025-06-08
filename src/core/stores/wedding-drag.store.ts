@@ -1,8 +1,8 @@
 import { computed, inject, Signal } from '@angular/core';
 import { signalStore, withProps, withState, withMethods, patchState } from '@ngrx/signals';
 import { WeddingStore } from './wedding.store';
-import { Color, GuestDragData } from '../../../core/models';
-import { buildColor } from '../../../core/helpers';
+import { Color, GuestDragData } from '../models';
+import { buildColor } from '../helpers';
 import { CdkDragStart } from '@angular/cdk/drag-drop';
 
 interface WeddingDragData {

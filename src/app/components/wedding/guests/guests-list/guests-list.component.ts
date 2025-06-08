@@ -1,5 +1,4 @@
 import { Component, inject, Signal } from '@angular/core';
-import { WeddingStore } from '../../wedding.store';
 import { Guest, GuestDragData } from '../../../../../core/models';
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDragPreview, CdkDropList } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +8,7 @@ import { DragParentComponent } from '../../../../../core/abstractions/drag-paren
 import { GuestDragPlaceholderComponent } from '../../guest-drag-placeholder/guest-drag-placeholder.component';
 import { GuestListItemComponent } from '../../guest-list-item/guest-list-item.component';
 import { GuestChairItemComponent } from '../../guest-chair-item/guest-chair-item.component';
+import { WeddingStore } from '../../../../../core/stores';
 
 @Component({
   selector: 'app-guests-list',

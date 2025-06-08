@@ -1,11 +1,11 @@
 import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { WeddingStore } from '../../wedding.store';
 import { Table, Guest, Color } from '../../../../../core/models';
 import { ChairComponent } from './chair/chair.component';
 import { nMap } from '@12luckydev/utils';
-import { WeddingDragStore } from '../../wedding-drag.store';
+import { WeddingDragStore } from '../../../../../core/stores/wedding-drag.store';
+import { WeddingStore } from '../../../../../core/stores';
 
 @Component({
   selector: 'app-table',

@@ -1,9 +1,9 @@
 import { editAt, editPropAt, mappify, move, nMap, popAt, popByProp, removeAt } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType, TableModel } from '../../../core/models';
+import { Table, Guest, Wedding, GuestImportSummaryModel, GroupImportType, TableModel } from '..//models';
 import { ALL_GUESTS } from './wedding.test-data';
-import { buildColor } from '../../../core/helpers';
 import { computed, Signal } from '@angular/core';
+import { buildColor } from '../helpers';
 
 const changeQuestAtTable = (
   tables: Table[],

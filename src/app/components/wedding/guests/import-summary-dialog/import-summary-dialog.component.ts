@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { NgTemplateOutlet } from '@angular/common';
-import { WeddingStore } from '../../wedding.store';
+import { WeddingStore } from '../../../../../core/stores';
 
 @Component({
   selector: 'app-import-summary-dialog',

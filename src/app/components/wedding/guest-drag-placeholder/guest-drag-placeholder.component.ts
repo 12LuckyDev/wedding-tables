@@ -1,6 +1,6 @@
 import { Component, inject, input, Signal } from '@angular/core';
 import { Guest } from '../../../../core/models';
-import { WeddingDragStore } from '../wedding-drag.store';
+import { WeddingDragStore } from '../../../../core/stores/wedding-drag.store';
 import { GuestListItemComponent } from '../guest-list-item/guest-list-item.component';
 import { GuestChairItemComponent } from '../guest-chair-item/guest-chair-item.component';
 

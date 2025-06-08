@@ -1,12 +1,12 @@
 import { Component, inject, input, Signal } from '@angular/core';
 import { Guest, GuestDragData } from '../../../../../../core/models';
-import { WeddingStore } from '../../../wedding.store';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkDrag, CdkDropList, CdkDragPlaceholder, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
 import { DragParentComponent } from '../../../../../../core/abstractions/drag-parent.component';
 import { GuestDragPlaceholderComponent } from '../../../guest-drag-placeholder/guest-drag-placeholder.component';
 import { GuestChairItemComponent } from '../../../guest-chair-item/guest-chair-item.component';
+import { WeddingStore } from '../../../../../../core/stores';
 
 @Component({
   selector: 'app-chair',
