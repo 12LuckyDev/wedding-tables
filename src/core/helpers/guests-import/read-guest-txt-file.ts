@@ -1,8 +1,8 @@
-import { Guest, GuestModel } from '../../models';
+import { Guest, GuestModel, ReadGuestsFileError, ReadGuestsFileResultModel } from '../../models';
 import { readFileContent } from './read-file-content';
 import { ReadGuestFileType } from './read-guest-file.type';
 
-export const readGuestTxtFile: ReadGuestFileType = async (file: File): Promise<Guest[][]> => {
+export const readGuestTxtFile: ReadGuestFileType = async (file: File): Promise<ReadGuestsFileResultModel> => {
   const content = await readFileContent(file);
   const splited = content.split('\n');
 
@@ -10,9 +10,21 @@ export const readGuestTxtFile: ReadGuestFileType = async (file: File): Promise<G
   splited.forEach((row) => {
     const guestsRow: Guest[] = [];
     const questNames = row.trim().split(',');
-    questNames.forEach((guestName) => guestsRow.push(new GuestModel(guestName.trim())));
-    guests.push(guestsRow);
+    questNames.forEach((guestName) => {
+      const name = guestName.trim();
+      if (!!name) {
+        guestsRow.push(new GuestModel(name));
+      }
+    });
+
+    if (guestsRow.length > 0) {
+      guests.push(guestsRow);
+    }
   });
 
-  return guests;
+  if (guests.length > 0) {
+    return { guests };
+  }
+
+  return { guests, error: ReadGuestsFileError.empty };
 };

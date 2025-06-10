@@ -1,3 +1,3 @@
-import { Guest } from '../../models';
+import { ReadGuestsFileResultModel } from '../../models';
 
-export type ReadGuestFileType = (file: File) => Promise<Guest[][]>;
+export type ReadGuestFileType = (file: File) => Promise<ReadGuestsFileResultModel>;

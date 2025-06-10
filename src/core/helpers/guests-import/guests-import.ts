@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const guestsImport = async (file: File, guests: Guest[]): Promise<GuestImportSummaryModel> => {
   const summary: GuestImportSummaryModel = { groups: [], newSingleGuests: [], existingSingleGuests: [] };
 
-  const newGuests: Guest[][] = await readGuestTxtFile(file);
+  const { guests: newGuests } = await readGuestTxtFile(file);
 
   newGuests.forEach((guestsRow: Guest[]) => {
     if (guestsRow.length === 1) {

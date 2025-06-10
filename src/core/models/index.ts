@@ -4,5 +4,7 @@ export * from './group-import-type.enum';
 export * from './guest-drag-data.model';
 export * from './guest-import-summary.model';
 export * from './guest.model';
+export * from './read-guests-file-error.enum';
+export * from './read-guests-file-result.model';
 export * from './table.model';
 export * from './wedding.model';
