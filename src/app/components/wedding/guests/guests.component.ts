@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ImportSummaryDialogComponent } from './import-summary-dialog/import-summary-dialog.component';
 import { GuestsListComponent } from './guests-list/guests-list.component';
 import { WeddingStore } from '../../../../core/stores';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-guests',
@@ -18,6 +19,7 @@ import { WeddingStore } from '../../../../core/stores';
 export class GuestsComponent {
   private readonly _weddingStore = inject(WeddingStore);
   private readonly _dialog = inject(MatDialog);
+  private readonly _snackBar = inject(MatSnackBar);
 
   public readonly guests: Signal<Guest[]> = this._weddingStore.guests;
 
@@ -27,6 +29,15 @@ export class GuestsComponent {
 
     if (file) {
       const guestsToImport = await guestsImport(file, this.guests());
+      if (guestsToImport.error) {
+        this._snackBar.open(guestsToImport.error, undefined, {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 5000,
+        });
+        return;
+      }
+
       const dialogRef = this._dialog.open(ImportSummaryDialogComponent, {
         minWidth: 0,
         maxWidth: '100%',
