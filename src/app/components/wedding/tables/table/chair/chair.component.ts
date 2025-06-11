@@ -7,6 +7,7 @@ import { DragParentComponent } from '../../../../../../core/abstractions/drag-pa
 import { GuestDragPlaceholderComponent } from '../../../guest-drag-placeholder/guest-drag-placeholder.component';
 import { GuestChairItemComponent } from '../../../guest-chair-item/guest-chair-item.component';
 import { WeddingStore } from '../../../../../../core/stores';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chair',
@@ -18,6 +19,7 @@ import { WeddingStore } from '../../../../../../core/stores';
     CdkDragPlaceholder,
     GuestDragPlaceholderComponent,
     GuestChairItemComponent,
+    MatTooltipModule,
   ],
   templateUrl: './chair.component.html',
   styleUrl: './chair.component.scss',

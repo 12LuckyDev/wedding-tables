@@ -17,6 +17,7 @@
       }"
       (cdkDragStarted)="dragStart($event)"
       (cdkDragReleased)="dragReleased()"
+      [matTooltip]="existingGuest.name"
     >
       <app-guest-drag-placeholder *cdkDragPlaceholder [guest]="existingGuest" />
     </app-guest-chair-item>
