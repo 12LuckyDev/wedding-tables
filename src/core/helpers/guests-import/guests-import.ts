@@ -1,11 +1,16 @@
 import { GroupImportSummaryModel, GroupImportType, Guest, GuestImportSummaryModel } from '../../models';
-import { readGuestTxtFile } from './read-guest-txt-file';
+import { readGuestFile } from './read-guest-file';
 import { v4 as uuidv4 } from 'uuid';
 
 export const guestsImport = async (file: File, guests: Guest[]): Promise<GuestImportSummaryModel> => {
   const summary: GuestImportSummaryModel = { groups: [], newSingleGuests: [], existingSingleGuests: [] };
 
-  const { guests: newGuests } = await readGuestTxtFile(file);
+  const { guests: newGuests, error } = await readGuestFile(file);
+
+  if (error) {
+    summary.error = error;
+    return summary;
+  }
 
   newGuests.forEach((guestsRow: Guest[]) => {
     if (guestsRow.length === 1) {

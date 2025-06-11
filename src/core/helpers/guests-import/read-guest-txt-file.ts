@@ -1,8 +1,8 @@
 import { Guest, GuestModel, ReadGuestsFileError, ReadGuestsFileResultModel } from '../../models';
 import { readFileContent } from './read-file-content';
-import { ReadGuestFileType } from './read-guest-file.type';
+import { ReadGuestFileFc } from './read-guest-file.type';
 
-export const readGuestTxtFile: ReadGuestFileType = async (file: File): Promise<ReadGuestsFileResultModel> => {
+export const readGuestTxtFile: ReadGuestFileFc = async (file: File): Promise<ReadGuestsFileResultModel> => {
   const content = await readFileContent(file);
   const splited = content.split('\n');
 
