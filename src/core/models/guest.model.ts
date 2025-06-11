@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Color } from './color.model';
 import { buildColor } from '../helpers';
+import { Metadata } from './metadata.type';
 
 export interface Guest {
   id: string;
@@ -8,6 +9,7 @@ export interface Guest {
   initials: string;
   groupId?: string;
   color: Color;
+  metadata?: Metadata;
 }
 
 export class GuestModel implements Guest {
@@ -16,6 +18,7 @@ export class GuestModel implements Guest {
   public initials: string;
   public color: Color;
   public groupId?: string;
+  public metadata?: Metadata;
 
   constructor(name: string, groupId?: string) {
     this.id = uuidv4();
