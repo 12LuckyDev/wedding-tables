@@ -1,7 +1,7 @@
 import { forEachProp } from '@12luckydev/utils';
-import { Metadata, MetadataField, MetadataRegistry, UnparsedMetadata } from '../../models';
+import { Metadata, MetadataField, UnparsedMetadata } from '../../models';
 
-export const parseMetadata = (unparsed: UnparsedMetadata, registry: MetadataRegistry): Metadata | undefined => {
+export const parseMetadata = (unparsed: UnparsedMetadata): Metadata | undefined => {
   const metadata: Metadata = {};
   let sthSet = false;
 
@@ -12,13 +12,6 @@ export const parseMetadata = (unparsed: UnparsedMetadata, registry: MetadataRegi
     }
 
     metadata[key] = prop as MetadataField;
-
-    const propsTypes = registry.get(key);
-    if (propsTypes && !propsTypes.includes(propType)) {
-      propsTypes.push(propType);
-    } else {
-      registry.set(key, [propType]);
-    }
   });
 
   return sthSet ? metadata : undefined;

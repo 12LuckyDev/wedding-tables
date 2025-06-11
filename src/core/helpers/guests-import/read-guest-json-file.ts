@@ -1,11 +1,4 @@
-import {
-  Guest,
-  GuestModel,
-  MetadataRegistry,
-  ReadGuestsFileError,
-  ReadGuestsFileResultModel,
-  UnparsedMetadata,
-} from '../../models';
+import { Guest, GuestModel, ReadGuestsFileError, ReadGuestsFileResultModel, UnparsedMetadata } from '../../models';
 import { parseMetadata } from './parse-metadata';
 import { readFileContent } from './read-file-content';
 import { ReadGuestFileFc } from './read-guest-file.type';
@@ -14,7 +7,7 @@ const handleStringRow = (row: string, list: Guest[]): void => {
   list.push(new GuestModel(row.trim()));
 };
 
-const handleObjectRow = (row: object, list: Guest[], metadataRegistry: MetadataRegistry): void => {
+const handleObjectRow = (row: object, list: Guest[]): void => {
   if (!('name' in row)) {
     return;
   }
@@ -30,7 +23,7 @@ const handleObjectRow = (row: object, list: Guest[], metadataRegistry: MetadataR
 
   const guest = new GuestModel(guestObj.name.trim());
   if (typeof guestObj.metadata === 'object') {
-    const meta = parseMetadata(guestObj.metadata, metadataRegistry);
+    const meta = parseMetadata(guestObj.metadata);
     if (meta) {
       guest.metadata = meta;
     }
@@ -39,7 +32,7 @@ const handleObjectRow = (row: object, list: Guest[], metadataRegistry: MetadataR
   list.push(guest);
 };
 
-const handleArrayRow = (row: unknown[], list: Guest[], metadataRegistry: MetadataRegistry): void => {
+const handleArrayRow = (row: unknown[], list: Guest[]): void => {
   row.forEach((el: unknown) => {
     if (!el) {
       return;
@@ -48,7 +41,7 @@ const handleArrayRow = (row: unknown[], list: Guest[], metadataRegistry: Metadat
     if (typeof el === 'string') {
       handleStringRow(el, list);
     } else if (typeof el === 'object' && !Array.isArray(el)) {
-      handleObjectRow(el, list, metadataRegistry);
+      handleObjectRow(el, list);
     }
   });
 };
@@ -67,8 +60,6 @@ export const readGuestJsonFile: ReadGuestFileFc = async (file: File): Promise<Re
     return { guests: [], error: ReadGuestsFileError.notAnArray };
   }
 
-  const metadataRegistry: MetadataRegistry = new Map<string, ('string' | 'number' | 'boolean')[]>();
-
   const guests: Guest[][] = [];
   parsed.forEach((row: unknown) => {
     if (!row) {
@@ -80,9 +71,9 @@ export const readGuestJsonFile: ReadGuestFileFc = async (file: File): Promise<Re
       handleStringRow(row, guestsRow);
     } else if (typeof row === 'object') {
       if (Array.isArray(row)) {
-        handleArrayRow(row, guestsRow, metadataRegistry);
+        handleArrayRow(row, guestsRow);
       } else {
-        handleObjectRow(row, guestsRow, metadataRegistry);
+        handleObjectRow(row, guestsRow);
       }
     }
 
@@ -92,7 +83,7 @@ export const readGuestJsonFile: ReadGuestFileFc = async (file: File): Promise<Re
   });
 
   if (guests.length > 0) {
-    return metadataRegistry.size > 0 ? { guests, metadataRegistry } : { guests };
+    return { guests };
   }
 
   return { guests, error: ReadGuestsFileError.empty };
