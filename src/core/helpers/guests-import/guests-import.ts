@@ -1,4 +1,10 @@
-import { GroupImportSummaryModel, GroupImportType, Guest, GuestImportSummaryModel } from '../../models';
+import {
+  GroupImportSummaryModel,
+  GroupImportType,
+  Guest,
+  GuestImportSummaryModel,
+  ReadGuestsFileError,
+} from '../../models';
 import { readGuestFile } from './read-guest-file';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -53,16 +59,22 @@ export const guestsImport = async (file: File, guests: Guest[]): Promise<GuestIm
       type = GroupImportType.newGroup;
     }
 
-    const groupSummary: GroupImportSummaryModel = {
-      newGuests,
-      existingGuests,
-      possibleGroupsGuests,
-      type,
-      groupIds: possibleGroups,
-    };
+    if (newGuests.length > 0) {
+      const groupSummary: GroupImportSummaryModel = {
+        newGuests,
+        existingGuests,
+        possibleGroupsGuests,
+        type,
+        groupIds: possibleGroups,
+      };
 
-    summary.groups.push(groupSummary);
+      summary.groups.push(groupSummary);
+    }
   });
+
+  if (summary.groups.length === 0 && summary.newSingleGuests.length === 0) {
+    summary.error = ReadGuestsFileError.nothingToImport;
+  }
 
   return summary;
 };

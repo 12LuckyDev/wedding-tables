@@ -3,4 +3,5 @@ export enum ReadGuestsFileError {
   barJsonFormat = 'BAD_JSON_FORMAT',
   empty = 'EMPTY',
   notAnArray = 'NOT AN ARRAY',
+  nothingToImport = 'NOTHING_TO_IMPORT',
 }
