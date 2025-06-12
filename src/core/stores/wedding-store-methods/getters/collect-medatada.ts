@@ -1,8 +1,8 @@
 import { Guest, MetadataField, MetadataFieldConfig, MetadataFieldType } from '../../../models';
 
-export const collectMedatada = (allGuests: Map<string, Guest>): Map<string, MetadataFieldConfig> => {
+export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfig> => {
   const map = new Map<string, MetadataFieldConfig>();
-  allGuests.forEach(({ metadata }) => {
+  guests.forEach(({ metadata }) => {
     if (!metadata) {
       return;
     }
@@ -13,7 +13,7 @@ export const collectMedatada = (allGuests: Map<string, Guest>): Map<string, Meta
 
       if (!map.has(key)) {
         map.set(key, { types: new Set<MetadataFieldType>([type]) });
-        return;
+        continue;
       }
 
       const fieldType = map.get(key)!;

@@ -12,6 +12,7 @@ export const parseMetadata = (unparsed: UnparsedMetadata): Metadata | undefined 
     }
 
     metadata[key] = prop as MetadataField;
+    sthSet = true;
   });
 
   return sthSet ? metadata : undefined;

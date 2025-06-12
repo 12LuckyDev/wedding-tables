@@ -52,7 +52,7 @@ export const WeddingStore = signalStore(
       });
     },
     collectMedatada(): Map<string, MetadataFieldConfig> {
-      return collectMedatada(state._allGuests());
+      return collectMedatada([...state._allGuests().values()]); //TODO only assigned to table
     },
     addTable() {
       patchState(state, addTable);
