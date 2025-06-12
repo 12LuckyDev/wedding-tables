@@ -34,19 +34,21 @@
           <mat-list-item role="listitem">
             <mat-slide-toggle formControlName="anonymize">Anonimize</mat-slide-toggle>
           </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item role="listitem">
-            <mat-slide-toggle formControlName="showMetadata">Show metadata</mat-slide-toggle>
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item role="listitem">
-            <mat-slide-toggle formControlName="saveMetaConfig">Save metadata configuration</mat-slide-toggle>
-          </mat-list-item>
+          @if (hasMetadata) {
+            <mat-divider></mat-divider>
+            <mat-list-item role="listitem">
+              <mat-slide-toggle formControlName="showMetadata">Show metadata</mat-slide-toggle>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item role="listitem">
+              <mat-slide-toggle formControlName="saveMetaConfig">Save metadata configuration</mat-slide-toggle>
+            </mat-list-item>
+          }
         </mat-list>
       </mat-card-content>
     </mat-card>
 
-    @if (!!exportForm.get('meta')) {
+    @if (!!exportForm.get('meta') && exportForm.get('showMetadata')?.value) {
       <mat-card appearance="outlined" class="dialog-card" formGroupName="meta">
         <mat-card-header>
           <mat-card-title> Metadata </mat-card-title>
@@ -56,6 +58,21 @@
             <ng-container matColumnDef="key">
               <th mat-header-cell *matHeaderCellDef>No.</th>
               <td mat-cell *matCellDef="let key">{{ key }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="hidden">
+              <th mat-header-cell *matHeaderCellDef>Visible</th>
+              <td mat-cell *matCellDef="let key">
+                @if (getHiddenControl(key); as hiddenControl) {
+                  <button
+                    mat-icon-button
+                    aria-label="Hide button"
+                    (click)="hiddenControl.setValue(!hiddenControl.value)"
+                  >
+                    <mat-icon>{{ hiddenControl.value ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                }
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="name">

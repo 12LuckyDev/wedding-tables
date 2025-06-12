@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../../../../core/stores';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { saveAs } from 'file-saver';
+import { MatIconModule } from '@angular/material/icon';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-export-dialog',
@@ -24,11 +26,14 @@ import { saveAs } from 'file-saver';
     MatInputModule,
     MatFormFieldModule,
     MatTableModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './export-dialog.component.html',
   styleUrl: './export-dialog.component.scss',
 })
 export class ExportDialogComponent {
+  private readonly _destroyRef = inject(DestroyRef);
   private readonly _dialogRef = inject(MatDialogRef<ExportDialogComponent>);
   private readonly _weddingStore = inject(WeddingStore);
 
@@ -37,16 +42,13 @@ export class ExportDialogComponent {
   public readonly tables: Signal<Table[]> = this._weddingStore.tables;
 
   private _metaKeys: string[] = [];
-  public readonly columns: string[] = ['key', 'name'];
+  public readonly columns: string[] = ['key', 'hidden', 'name'];
   private _exportForm: FormGroup;
   private _metadataConfig!: Map<string, MetadataFieldConfig>;
 
   constructor() {
-    // TODO - hide metadata related if no metadata
     this._exportForm = new FormGroup({
       anonymize: new FormControl(false),
-      showMetadata: new FormControl(true),
-      saveMetaConfig: new FormControl(false),
     });
 
     this.setMetaForm();
@@ -60,6 +62,10 @@ export class ExportDialogComponent {
     return this._exportForm.valid;
   }
 
+  public get hasMetadata(): boolean {
+    return this._metaKeys.length > 0;
+  }
+
   public get metaKeys(): string[] {
     return this._metaKeys;
   }
@@ -68,11 +74,29 @@ export class ExportDialogComponent {
     return this._exportForm.get(`meta.${key}.name`)?.hasError('required') ?? false;
   }
 
+  public getHiddenControl(key: string): FormControl | null {
+    return this._exportForm.get(`meta.${key}.hidden`) as FormControl | null;
+  }
+
   private setMetaForm(): void {
     this._metadataConfig = this._weddingStore.collectMedatada();
     if (this._metadataConfig.size === 0) {
       return;
     }
+
+    const showMetadataControl = new FormControl(true);
+    const saveMetaConfigControl = new FormControl(false);
+    this._exportForm.addControl('showMetadata', showMetadataControl);
+    this._exportForm.addControl('saveMetaConfig', saveMetaConfigControl);
+    showMetadataControl.valueChanges.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((showMetadata) => {
+      if (showMetadata) {
+        saveMetaConfigControl.enable();
+      } else {
+        saveMetaConfigControl.setValue(false);
+        saveMetaConfigControl.disable();
+      }
+    });
+
     const metaForm = new FormGroup({});
     this._exportForm.addControl('meta', metaForm);
 

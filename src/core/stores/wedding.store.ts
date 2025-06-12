@@ -61,7 +61,11 @@ export const WeddingStore = signalStore(
       });
     },
     collectMedatada(): Map<string, MetadataFieldConfig> {
-      return collectMedatada([...state._allGuests().values()]); //TODO only assigned to table
+      const guestIds = state.guestIds();
+      const allGuests = state._allGuests();
+      const allGuestIds = [...allGuests.keys()];
+      const assignedGuests = allGuestIds.filter((id) => !guestIds.includes(id)).map((id) => allGuests.get(id)!);
+      return collectMedatada(assignedGuests);
     },
     exportTables(config: ExportConfig): string {
       return exportTables(config, state.tables(), state._allGuests());
