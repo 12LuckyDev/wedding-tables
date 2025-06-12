@@ -1,5 +1,5 @@
-import { Guest, Wedding } from '../../models';
-import { changeGuestAtTable } from './helpers/change-guest-at-table';
+import { Guest, Wedding } from '../../../models';
+import { changeGuestAtTable } from '../helpers/change-guest-at-table';
 
 export const moveGuestBetweenTables = (
   oldState: Wedding,

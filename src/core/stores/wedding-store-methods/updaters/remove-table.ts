@@ -1,5 +1,5 @@
 import { popByProp } from '@12luckydev/utils';
-import { Wedding } from '../../models';
+import { Wedding } from '../../../models';
 
 export const removeTable = (oldState: Wedding, tableNumber?: number): Wedding => {
   if (tableNumber === undefined) {

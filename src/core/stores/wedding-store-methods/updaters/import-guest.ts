@@ -1,5 +1,5 @@
-import { GroupImportSummaryModel, Guest, GuestImportSummaryModel, Wedding } from '../../models';
-import { buildColor } from '../../helpers';
+import { GroupImportSummaryModel, Guest, GuestImportSummaryModel, Wedding } from '../../../models';
+import { buildColor } from '../../../helpers';
 
 const assingExistingGuestsToGroup = (guestMap: Map<string, Guest>, groupId: string, possibleGroupsGuests: Guest[]) => {
   possibleGroupsGuests.forEach(({ id }) => {

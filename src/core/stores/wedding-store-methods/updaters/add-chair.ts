@@ -1,5 +1,5 @@
 import { editPropAt } from '@12luckydev/utils';
-import { Wedding } from '../../models';
+import { Wedding } from '../../../models';
 
 export const addChair = (oldState: Wedding, tableNumber?: number): Wedding => {
   const { tables: oldTables } = oldState;

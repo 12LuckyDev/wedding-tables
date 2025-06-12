@@ -1,5 +1,5 @@
 import { editPropAt, popAt, removeAt } from '@12luckydev/utils';
-import { Wedding } from '../../models';
+import { Wedding } from '../../../models';
 
 export const removeChair = (oldState: Wedding, tableNumber?: number): Wedding => {
   const { tables: oldTables, guestIds } = oldState;

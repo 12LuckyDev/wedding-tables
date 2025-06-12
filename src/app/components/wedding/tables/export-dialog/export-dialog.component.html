@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Tables export</h2>
+<mat-dialog-content>
+  <form [formGroup]="exportForm">
+    <mat-card appearance="outlined" class="dialog-card">
+      <mat-card-header>
+        <mat-card-title> Summary </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list role="list">
+          <mat-list-item role="listitem">
+            <span matListItemTitle>All guest:</span>
+            <span matListItemLine>{{ allGuestCount() }}</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item role="listitem">
+            <span matListItemTitle>Were seated:</span>
+            <span matListItemLine>{{ allGuestCount() - seatedCount() }}</span>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item role="listitem">
+            <span matListItemTitle>Tables amount:</span>
+            <span matListItemLine>{{ tables().length }}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="dialog-card">
+      <mat-card-header>
+        <mat-card-title> Export settings </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list role="list">
+          <mat-list-item role="listitem">
+            <mat-slide-toggle formControlName="anonymize">Anonimize</mat-slide-toggle>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item role="listitem">
+            <mat-slide-toggle formControlName="showMetadata">Show metadata</mat-slide-toggle>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button id="accept" mat-button (click)="accept()" [disabled]="!isValid">Accept</button>
+</mat-dialog-actions>

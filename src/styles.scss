@@ -19,6 +19,10 @@ body {
   flex: 1 1 auto;
 }
 
+.dialog-card {
+  margin-bottom: 1rem;
+}
+
 .danger-button {
   @include mat.icon-button-overrides(
     (

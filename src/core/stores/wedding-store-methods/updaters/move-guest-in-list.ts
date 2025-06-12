@@ -1,5 +1,5 @@
 import { move } from '@12luckydev/utils';
-import { Wedding } from '../../models';
+import { Wedding } from '../../../models';
 
 export const moveGuestInList = (oldState: Wedding, from: number, to: number): Wedding => {
   const { guestIds } = oldState;

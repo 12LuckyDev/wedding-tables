@@ -1,17 +1,18 @@
 import { mappify } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestImportSummaryModel, TableModel } from '..//models';
+import { Table, Guest, Wedding, GuestImportSummaryModel, TableModel, MetadataFieldConfig } from '..//models';
 import { ALL_GUESTS } from './wedding.test-data';
 import { computed, Signal } from '@angular/core';
-import { addTable } from './wedding-store-methods/add-table';
-import { removeTable } from './wedding-store-methods/remove-table';
-import { addChair } from './wedding-store-methods/add-chair';
-import { removeChair } from './wedding-store-methods/remove-chair';
-import { moveGuestFromList } from './wedding-store-methods/move-guest-from-list';
-import { moveGuestBetweenTables } from './wedding-store-methods/move-guest-between-tables';
-import { removeGuestFromTable } from './wedding-store-methods/remove-guest-from-table';
-import { moveGuestInList } from './wedding-store-methods/move-guest-in-list';
-import { importGuest } from './wedding-store-methods/import-guest';
+import { addTable } from './wedding-store-methods/updaters/add-table';
+import { removeTable } from './wedding-store-methods/updaters/remove-table';
+import { addChair } from './wedding-store-methods/updaters/add-chair';
+import { removeChair } from './wedding-store-methods/updaters/remove-chair';
+import { moveGuestFromList } from './wedding-store-methods/updaters/move-guest-from-list';
+import { moveGuestBetweenTables } from './wedding-store-methods/updaters/move-guest-between-tables';
+import { removeGuestFromTable } from './wedding-store-methods/updaters/remove-guest-from-table';
+import { moveGuestInList } from './wedding-store-methods/updaters/move-guest-in-list';
+import { importGuest } from './wedding-store-methods/updaters/import-guest';
+import { collectMedatada } from './wedding-store-methods/getters/collect-medatada';
 
 export const WeddingStore = signalStore(
   { providedIn: 'root' },
@@ -27,6 +28,7 @@ export const WeddingStore = signalStore(
         .map((id) => guestMap.get(id))
         .filter((g) => !!g);
     }),
+    allGuestCount: computed(() => _allGuests().size),
     tablesGroupsMap: computed(() => {
       const groupMap = new Map<number, string[]>();
       const guestMap = _allGuests();
@@ -48,6 +50,9 @@ export const WeddingStore = signalStore(
         const id = guestId();
         return id ? (state._allGuests().get(id) ?? null) : null;
       });
+    },
+    collectMedatada(): Map<string, MetadataFieldConfig> {
+      return collectMedatada(state._allGuests());
     },
     addTable() {
       patchState(state, addTable);

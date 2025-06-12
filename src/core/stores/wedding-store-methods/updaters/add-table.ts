@@ -1,4 +1,4 @@
-import { TableModel, Wedding } from '../../models';
+import { TableModel, Wedding } from '../../../models';
 
 export const addTable = (oldState: Wedding): Wedding => {
   const { tables } = oldState;
