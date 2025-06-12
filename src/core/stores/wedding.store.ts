@@ -1,6 +1,14 @@
 import { mappify } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestImportSummaryModel, TableModel, MetadataFieldConfig } from '..//models';
+import {
+  Table,
+  Guest,
+  Wedding,
+  GuestImportSummaryModel,
+  TableModel,
+  MetadataFieldConfig,
+  ExportConfig,
+} from '..//models';
 import { ALL_GUESTS } from './wedding.test-data';
 import { computed, Signal } from '@angular/core';
 import { addTable } from './wedding-store-methods/updaters/add-table';
@@ -13,6 +21,7 @@ import { removeGuestFromTable } from './wedding-store-methods/updaters/remove-gu
 import { moveGuestInList } from './wedding-store-methods/updaters/move-guest-in-list';
 import { importGuest } from './wedding-store-methods/updaters/import-guest';
 import { collectMedatada } from './wedding-store-methods/getters/collect-medatada';
+import { exportTables } from './wedding-store-methods/getters/export-tables';
 
 export const WeddingStore = signalStore(
   { providedIn: 'root' },
@@ -53,6 +62,9 @@ export const WeddingStore = signalStore(
     },
     collectMedatada(): Map<string, MetadataFieldConfig> {
       return collectMedatada([...state._allGuests().values()]); //TODO only assigned to table
+    },
+    exportTables(config: ExportConfig): string {
+      return exportTables(config, state.tables(), state._allGuests());
     },
     addTable() {
       patchState(state, addTable);

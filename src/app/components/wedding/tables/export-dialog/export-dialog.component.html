@@ -38,9 +38,44 @@
           <mat-list-item role="listitem">
             <mat-slide-toggle formControlName="showMetadata">Show metadata</mat-slide-toggle>
           </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item role="listitem">
+            <mat-slide-toggle formControlName="saveMetaConfig">Save metadata configuration</mat-slide-toggle>
+          </mat-list-item>
         </mat-list>
       </mat-card-content>
     </mat-card>
+
+    @if (!!exportForm.get('meta')) {
+      <mat-card appearance="outlined" class="dialog-card" formGroupName="meta">
+        <mat-card-header>
+          <mat-card-title> Metadata </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="metaKeys" class="mat-elevation-z8">
+            <ng-container matColumnDef="key">
+              <th mat-header-cell *matHeaderCellDef>No.</th>
+              <td mat-cell *matCellDef="let key">{{ key }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let key" [formGroupName]="key">
+                <mat-form-field>
+                  <input matInput placeholder="Enter name" formControlName="name" />
+                  @if (nameHasRequiredError(key)) {
+                    <mat-error>Name is required</mat-error>
+                  }
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    }
   </form>
 </mat-dialog-content>
 

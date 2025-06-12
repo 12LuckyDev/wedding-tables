@@ -1,4 +1,5 @@
 export * from './color.model';
+export * from './export-config.model';
 export * from './group-import-summary.model';
 export * from './group-import-type.enum';
 export * from './guest-drag-data.model';

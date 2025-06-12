@@ -1,4 +1,5 @@
 import { Guest, MetadataField, MetadataFieldConfig, MetadataFieldType } from '../../../models';
+import { sentenceCase } from 'change-case';
 
 export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfig> => {
   const map = new Map<string, MetadataFieldConfig>();
@@ -12,7 +13,7 @@ export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfi
       const type: MetadataFieldType = typeof value as MetadataFieldType;
 
       if (!map.has(key)) {
-        map.set(key, { types: new Set<MetadataFieldType>([type]) });
+        map.set(key, { name: sentenceCase(key), types: new Set<MetadataFieldType>([type]), hidden: false });
         continue;
       }
 
