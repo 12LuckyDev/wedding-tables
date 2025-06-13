@@ -14,6 +14,7 @@ import { saveAs } from 'file-saver';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/boolean-formatter-dialog.component';
+import { WeddingMetadataStore } from '../../../../../core/stores/wedding-metadata.store';
 
 @Component({
   selector: 'app-export-dialog',
@@ -37,6 +38,7 @@ export class ExportDialogComponent {
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _dialogRef = inject(MatDialogRef<ExportDialogComponent>);
   private readonly _weddingStore = inject(WeddingStore);
+  private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
   private readonly _dialog = inject(MatDialog);
 
   public readonly allGuestCount: Signal<number> = this._weddingStore.allGuestCount;
@@ -53,7 +55,6 @@ export class ExportDialogComponent {
     });
 
     this.setMetaForm();
-    console.log(this.metaRows);
   }
 
   public get exportForm(): FormGroup {
@@ -90,6 +91,7 @@ export class ExportDialogComponent {
     const saveMetaConfigControl = new FormControl(false);
     this._exportForm.addControl('showMetadata', showMetadataControl);
     this._exportForm.addControl('saveMetaConfig', saveMetaConfigControl);
+
     showMetadataControl.valueChanges.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((showMetadata) => {
       if (showMetadata) {
         saveMetaConfigControl.enable();
@@ -103,13 +105,22 @@ export class ExportDialogComponent {
     this._exportForm.addControl('meta', metaForm);
 
     this._metadataConfig.forEach((metaConfig, metaName) => {
-      metaForm.addControl(
-        metaName,
-        new FormGroup({
-          hidden: new FormControl(metaConfig.hidden),
-          label: new FormControl(metaConfig.label),
-        }),
-      );
+      const metaGroup: FormGroup<{
+        hidden: FormControl<boolean | null>;
+        label: FormControl<string | null>;
+        formatterId?: FormControl<string | null>;
+      }> = new FormGroup({
+        hidden: new FormControl(metaConfig.hidden),
+        label: new FormControl(metaConfig.label),
+      });
+
+      if (metaConfig.types.size === 1 && metaConfig.types.has('boolean')) {
+        metaGroup.addControl(
+          'formatterId',
+          new FormControl(this._weddingMetadataStore.booleanFormatters()[0].id ?? null),
+        );
+      }
+      metaForm.addControl(metaName, metaGroup);
     });
   }
 
@@ -124,15 +135,25 @@ export class ExportDialogComponent {
     });
   }
 
-  public onFormater(key: string): void {
+  public onFormater({ key }: MetadataFieldConfig): void {
+    const formatterIdControl = this._exportForm.get(`meta.${key}.formatterId`);
+    if (!formatterIdControl) {
+      return;
+    }
+
     const dialogRef = this._dialog.open(BooleanFormatterDialogComponent, {
       minWidth: 0,
       maxWidth: '100%',
       width: '45vw',
       autoFocus: '#accept',
+      data: { formatterId: formatterIdControl.value },
     });
 
-    dialogRef.afterClosed().subscribe();
+    dialogRef.afterClosed().subscribe((value?: string | null) => {
+      if (value !== undefined) {
+        formatterIdControl.setValue(value);
+      }
+    });
   }
 
   public accept(): void {

@@ -99,7 +99,7 @@
               <th mat-header-cell *matHeaderCellDef>Formatter</th>
               <td mat-cell *matCellDef="let row">
                 @if (row.types.size === 1 && row.types.has('boolean')) {
-                  <button mat-icon-button aria-label="Formatter button" (click)="onFormater(row.key)">
+                  <button mat-icon-button aria-label="Formatter button" (click)="onFormater(row)">
                     <mat-icon>edit</mat-icon>
                   </button>
                 }

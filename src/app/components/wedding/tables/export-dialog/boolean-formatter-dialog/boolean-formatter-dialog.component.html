@@ -5,7 +5,78 @@
       <mat-card-header>
         <mat-card-title> Choose formater </mat-card-title>
       </mat-card-header>
-      <mat-card-content> </mat-card-content>
+      <mat-card-content>
+        <table mat-table [dataSource]="tableFormatters()" class="mat-elevation-z8">
+          <ng-container matColumnDef="true">
+            <th mat-header-cell *matHeaderCellDef>True label</th>
+            <td mat-cell *matCellDef="let row">
+              @if (editedId() === row.id) {
+                @if (getTrueControl(); as control) {
+                  <mat-form-field>
+                    <input matInput placeholder="Enter label text" [formControl]="control" />
+                  </mat-form-field>
+                }
+              } @else {
+                {{ row.trueLabel }}
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="false">
+            <th mat-header-cell *matHeaderCellDef>False label</th>
+            <td mat-cell *matCellDef="let row">
+              @if (editedId() === row.id) {
+                @if (getFalseControl(); as control) {
+                  <mat-form-field>
+                    <input matInput placeholder="Enter label text" [formControl]="control" />
+                  </mat-form-field>
+                }
+              } @else {
+                {{ row.falseLabel }}
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="options">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row">
+              @if (row.editable) {
+                @if (editedId() === row.id) {
+                  <button
+                    mat-icon-button
+                    aria-label="Save button"
+                    (click)="adding() ? saveAdd() : saveEdit()"
+                    [disabled]="!isValid"
+                  >
+                    <mat-icon>save</mat-icon>
+                  </button>
+                } @else {
+                  <button mat-icon-button aria-label="Edit button" (click)="edit(row)" [disabled]="editedId() !== null">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                }
+                <button mat-icon-button aria-label="Delete button" (click)="remove(row)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns"></tr>
+        </table>
+
+        <button
+          class="add-formatter-button"
+          matButton="filled"
+          aria-label="Add button"
+          (click)="add()"
+          [disabled]="editedId() !== null"
+        >
+          Add new
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-card-content>
     </mat-card>
   </form>
 </mat-dialog-content>
