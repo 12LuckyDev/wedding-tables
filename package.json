@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "eslint"
+    "lint": "eslint",
+    "indexify-models": "indexify-dir-cli ts ./src/core/models -s -b -n -i"
   },
   "private": true,
   "dependencies": {
