@@ -1,6 +1,6 @@
 import { Component, computed, DestroyRef, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../../../../core/stores';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -13,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 import { saveAs } from 'file-saver';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/boolean-formatter-dialog.component';
 
 @Component({
   selector: 'app-export-dialog',
@@ -36,13 +37,13 @@ export class ExportDialogComponent {
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _dialogRef = inject(MatDialogRef<ExportDialogComponent>);
   private readonly _weddingStore = inject(WeddingStore);
+  private readonly _dialog = inject(MatDialog);
 
   public readonly allGuestCount: Signal<number> = this._weddingStore.allGuestCount;
   public readonly seatedCount: Signal<number> = computed(() => this._weddingStore.guests().length);
   public readonly tables: Signal<Table[]> = this._weddingStore.tables;
 
-  private _metaKeys: string[] = [];
-  public readonly columns: string[] = ['key', 'hidden', 'label'];
+  public readonly columns: string[] = ['key', 'hidden', 'label', 'formatter'];
   private _exportForm: FormGroup;
   private _metadataConfig!: Map<string, MetadataFieldConfig>;
 
@@ -52,6 +53,7 @@ export class ExportDialogComponent {
     });
 
     this.setMetaForm();
+    console.log(this.metaRows);
   }
 
   public get exportForm(): FormGroup {
@@ -63,11 +65,11 @@ export class ExportDialogComponent {
   }
 
   public get hasMetadata(): boolean {
-    return this._metaKeys.length > 0;
+    return this._metadataConfig.size > 0;
   }
 
-  public get metaKeys(): string[] {
-    return this._metaKeys;
+  public get metaRows(): MetadataFieldConfig[] {
+    return [...this._metadataConfig.values()];
   }
 
   public getLabelControl(key: string): FormControl | null {
@@ -101,7 +103,6 @@ export class ExportDialogComponent {
     this._exportForm.addControl('meta', metaForm);
 
     this._metadataConfig.forEach((metaConfig, metaName) => {
-      this._metaKeys.push(metaName);
       metaForm.addControl(
         metaName,
         new FormGroup({
@@ -121,6 +122,17 @@ export class ExportDialogComponent {
         config.label = keyRawValue.label;
       }
     });
+  }
+
+  public onFormater(key: string): void {
+    const dialogRef = this._dialog.open(BooleanFormatterDialogComponent, {
+      minWidth: 0,
+      maxWidth: '100%',
+      width: '45vw',
+      autoFocus: '#accept',
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 
   public accept(): void {

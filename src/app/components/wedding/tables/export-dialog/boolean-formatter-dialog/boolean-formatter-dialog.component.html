@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Boolean formaters</h2>
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <mat-card appearance="outlined" class="dialog-card">
+      <mat-card-header>
+        <mat-card-title> Choose formater </mat-card-title>
+      </mat-card-header>
+      <mat-card-content> </mat-card-content>
+    </mat-card>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button id="accept" mat-button (click)="accept()" [disabled]="!isValid">Accept</button>
+</mat-dialog-actions>

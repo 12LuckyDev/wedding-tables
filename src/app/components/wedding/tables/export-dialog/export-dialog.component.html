@@ -54,16 +54,16 @@
           <mat-card-title> Metadata </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <table mat-table [dataSource]="metaKeys" class="mat-elevation-z8">
+          <table mat-table [dataSource]="metaRows" class="mat-elevation-z8">
             <ng-container matColumnDef="key">
               <th mat-header-cell *matHeaderCellDef>No.</th>
-              <td mat-cell *matCellDef="let key">{{ key }}</td>
+              <td mat-cell *matCellDef="let row">{{ row.key }}</td>
             </ng-container>
 
             <ng-container matColumnDef="hidden">
               <th mat-header-cell *matHeaderCellDef>Visible</th>
-              <td mat-cell *matCellDef="let key">
-                @if (getHiddenControl(key); as hiddenControl) {
+              <td mat-cell *matCellDef="let row">
+                @if (getHiddenControl(row.key); as hiddenControl) {
                   <button
                     mat-icon-button
                     aria-label="Hide button"
@@ -77,8 +77,8 @@
 
             <ng-container matColumnDef="label">
               <th mat-header-cell *matHeaderCellDef>Label</th>
-              <td mat-cell *matCellDef="let key">
-                @if (getLabelControl(key); as labelControl) {
+              <td mat-cell *matCellDef="let row">
+                @if (getLabelControl(row.key); as labelControl) {
                   <mat-form-field>
                     <input matInput placeholder="Enter label text" [formControl]="labelControl" />
                     <button
@@ -91,6 +91,17 @@
                       <mat-icon>close</mat-icon>
                     </button>
                   </mat-form-field>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="formatter">
+              <th mat-header-cell *matHeaderCellDef>Formatter</th>
+              <td mat-cell *matCellDef="let row">
+                @if (row.types.size === 1 && row.types.has('boolean')) {
+                  <button mat-icon-button aria-label="Formatter button" (click)="onFormater(row.key)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
                 }
               </td>
             </ng-container>

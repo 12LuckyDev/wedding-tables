@@ -13,7 +13,7 @@ export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfi
       const type: MetadataFieldType = typeof value as MetadataFieldType;
 
       if (!map.has(key)) {
-        map.set(key, { label: sentenceCase(key), types: new Set<MetadataFieldType>([type]), hidden: false });
+        map.set(key, { key, label: sentenceCase(key), types: new Set<MetadataFieldType>([type]), hidden: false });
         continue;
       }
 
