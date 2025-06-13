@@ -1,14 +1,9 @@
 import { computed, inject, Signal } from '@angular/core';
 import { signalStore, withProps, withState, withMethods, patchState } from '@ngrx/signals';
 import { WeddingStore } from './wedding.store';
-import { Color, GuestDragData } from '../models';
+import { Color, GuestDragData, WeddingDragData } from '../models';
 import { buildColor } from '../helpers';
 import { CdkDragStart } from '@angular/cdk/drag-drop';
-
-interface WeddingDragData {
-  currentGroupId: string | null;
-  listPresentation: boolean;
-}
 
 export const WeddingDragStore = signalStore(
   { providedIn: 'root' },
