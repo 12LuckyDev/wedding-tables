@@ -2,7 +2,7 @@ import { Component, computed, DestroyRef, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../../../../core/stores';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -42,7 +42,7 @@ export class ExportDialogComponent {
   public readonly tables: Signal<Table[]> = this._weddingStore.tables;
 
   private _metaKeys: string[] = [];
-  public readonly columns: string[] = ['key', 'hidden', 'name'];
+  public readonly columns: string[] = ['key', 'hidden', 'label'];
   private _exportForm: FormGroup;
   private _metadataConfig!: Map<string, MetadataFieldConfig>;
 
@@ -70,8 +70,8 @@ export class ExportDialogComponent {
     return this._metaKeys;
   }
 
-  public nameHasRequiredError(key: string): boolean {
-    return this._exportForm.get(`meta.${key}.name`)?.hasError('required') ?? false;
+  public getLabelControl(key: string): FormControl | null {
+    return this._exportForm.get(`meta.${key}.label`) as FormControl | null;
   }
 
   public getHiddenControl(key: string): FormControl | null {
@@ -106,7 +106,7 @@ export class ExportDialogComponent {
         metaName,
         new FormGroup({
           hidden: new FormControl(metaConfig.hidden),
-          name: new FormControl(metaConfig.name, [Validators.required]),
+          label: new FormControl(metaConfig.label),
         }),
       );
     });
@@ -118,7 +118,7 @@ export class ExportDialogComponent {
       if (keyGroup) {
         const keyRawValue = keyGroup.getRawValue();
         config.hidden = keyRawValue.hidden;
-        config.name = keyRawValue.name;
+        config.label = keyRawValue.label;
       }
     });
   }

@@ -13,8 +13,12 @@ const buildMetadataLine = (metadataConfig: Map<string, MetadataFieldConfig>, met
     }
 
     let metadataText = '';
-    metadataText += `${config.name}: `; //TODO showName
+    if (!!config.label) {
+      metadataText += `${config.label}: `;
+    }
     metadataText += metadata[key]; //TODO formaters
+    //TODO add filters
+    //TODO add counters
     builder.push(metadataText);
   });
 

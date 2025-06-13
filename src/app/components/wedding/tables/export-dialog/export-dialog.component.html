@@ -75,15 +75,17 @@
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef>Name</th>
-              <td mat-cell *matCellDef="let key" [formGroupName]="key">
-                <mat-form-field>
-                  <input matInput placeholder="Enter name" formControlName="name" />
-                  @if (nameHasRequiredError(key)) {
-                    <mat-error>Name is required</mat-error>
-                  }
-                </mat-form-field>
+            <ng-container matColumnDef="label">
+              <th mat-header-cell *matHeaderCellDef>Label</th>
+              <td mat-cell *matCellDef="let key">
+                @if (getLabelControl(key); as labelControl) {
+                  <mat-form-field>
+                    <input matInput placeholder="Enter label text" [formControl]="labelControl" />
+                    <button matSuffix matIconButton aria-label="Clear" (click)="labelControl.setValue('')">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </mat-form-field>
+                }
               </td>
             </ng-container>
 

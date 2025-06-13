@@ -1,7 +1,7 @@
 import { MetadataFieldType } from './metadata.type';
 
 export interface MetadataFieldConfig {
-  name: string;
+  label: string;
   types: Set<MetadataFieldType>;
   hidden: boolean;
 }
