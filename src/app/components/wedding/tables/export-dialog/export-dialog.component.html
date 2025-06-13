@@ -81,7 +81,13 @@
                 @if (getLabelControl(key); as labelControl) {
                   <mat-form-field>
                     <input matInput placeholder="Enter label text" [formControl]="labelControl" />
-                    <button matSuffix matIconButton aria-label="Clear" (click)="labelControl.setValue('')">
+                    <button
+                      matSuffix
+                      matIconButton
+                      aria-label="Clear"
+                      [disabled]="!labelControl.value"
+                      (click)="labelControl.setValue('')"
+                    >
                       <mat-icon>close</mat-icon>
                     </button>
                   </mat-form-field>
