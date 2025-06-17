@@ -99,9 +99,27 @@
               <th mat-header-cell *matHeaderCellDef>Formatter</th>
               <td mat-cell *matCellDef="let row">
                 @if (row.types.size === 1 && row.types.has('boolean')) {
-                  <button mat-icon-button aria-label="Formatter button" (click)="onFormater(row)">
-                    <mat-icon>edit</mat-icon>
-                  </button>
+                  @if (getFormatterTooltip(row.key); as tooltip) {
+                    <button
+                      matIconButton
+                      [matTooltip]="tooltip"
+                      aria-label="Formatter button"
+                      (click)="onFormater(row)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  } @else {
+                    <button
+                      matIconButton
+                      matBadge="!"
+                      matBadgeSize="large"
+                      matTooltip="Boolean formater parser is required!"
+                      aria-label="Formatter button"
+                      (click)="onFormater(row)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
                 }
               </td>
             </ng-container>

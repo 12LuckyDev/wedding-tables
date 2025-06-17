@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { ExportConfig, MetadataFieldConfig, Table } from '../../../../../core/models';
+import { BooleanFormatter, ExportConfig, MetadataFieldConfig, Table } from '../../../../../core/models';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { saveAs } from 'file-saver';
@@ -14,6 +14,8 @@ import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/bool
 import { WeddingMetadataStore } from '../../../../../core/stores/wedding-metadata.store';
 import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../core/abstractions';
 import { DialogService } from '../../../../../core/services/dialog.service';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-export-dialog',
@@ -26,6 +28,8 @@ import { DialogService } from '../../../../../core/services/dialog.service';
     MatInputModule,
     MatTableModule,
     MatIconModule,
+    MatBadgeModule,
+    MatTooltipModule,
   ],
   templateUrl: './export-dialog.component.html',
   styleUrl: './export-dialog.component.scss',
@@ -35,6 +39,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
   private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
   private readonly _dialogService = inject(DialogService);
 
+  public readonly booleanFormatters: Signal<BooleanFormatter[]> = this._weddingMetadataStore.booleanFormatters;
   public readonly allGuestCount: Signal<number> = this._weddingStore.allGuestCount;
   public readonly seatedCount: Signal<number> = computed(() => this._weddingStore.guests().length);
   public readonly tables: Signal<Table[]> = this._weddingStore.tables;
@@ -51,7 +56,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     this.setMetaForm();
 
     effect(() => {
-      const booleanFormatters = this._weddingMetadataStore.booleanFormatters();
+      const booleanFormatters = this.booleanFormatters();
       const meta = this._formGroup.get('meta') as FormGroup | null;
       if (meta === null) {
         return;
@@ -76,6 +81,12 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
 
   public get metaRows(): MetadataFieldConfig[] {
     return [...this._metadataConfig.values()];
+  }
+
+  public getFormatterTooltip(key: string): string | null {
+    const control = this._formGroup.get(`meta.${key}.formatterId`);
+    const formatter = control ? this.booleanFormatters().find(({ id }) => control.value) : null;
+    return formatter ? `${formatter.trueLabel} / ${formatter.falseLabel}` : null;
   }
 
   public getLabelControl(key: string): FormControl | null {
