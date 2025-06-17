@@ -1,6 +1,6 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../../../../core/stores';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -49,6 +49,25 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     });
 
     this.setMetaForm();
+
+    effect(() => {
+      const booleanFormatters = this._weddingMetadataStore.booleanFormatters();
+      const meta = this._formGroup.get('meta') as FormGroup | null;
+      if (meta === null) {
+        return;
+      }
+
+      this.metaRows.forEach(({ key }) => {
+        const formatterControl = meta.get(`${key}.formatterId`);
+        if (!formatterControl) {
+          return;
+        }
+
+        if (formatterControl.value !== null && !booleanFormatters.find(({ id }) => id === formatterControl.value)) {
+          formatterControl.setValue(null);
+        }
+      });
+    });
   }
 
   public get hasMetadata(): boolean {
@@ -103,7 +122,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
       if (metaConfig.types.size === 1 && metaConfig.types.has('boolean')) {
         metaGroup.addControl(
           'formatterId',
-          new FormControl(this._weddingMetadataStore.booleanFormatters()[0].id ?? null),
+          new FormControl(this._weddingMetadataStore.booleanFormatters()[0].id ?? null, [Validators.required]),
         );
       }
       metaForm.addControl(metaName, metaGroup);

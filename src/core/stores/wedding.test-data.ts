@@ -29,7 +29,7 @@ export const ALL_GUESTS: GuestModel[] = PEOPLE.map((name, index) => {
     model.groupId = groupId;
     model.color = buildColor(groupId);
   }
-  model.metadata = { isVege: Math.random() < 0.5 };
+  model.metadata = { isVege: Math.random() < 0.5, isKeto: Math.random() < 0.5 };
 
   return model;
 });

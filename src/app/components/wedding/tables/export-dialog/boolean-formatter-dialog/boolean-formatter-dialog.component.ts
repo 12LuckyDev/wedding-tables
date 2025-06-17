@@ -48,7 +48,7 @@ export class BooleanFormatterDialogComponent extends DialogFormBaseComponent {
 
   constructor() {
     super();
-    this._formGroup = new FormGroup({});
+
     effect(() => {
       const editedId = this.editedId();
       if (!editedId) {
