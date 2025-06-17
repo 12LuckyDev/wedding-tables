@@ -93,6 +93,11 @@
                     <mat-icon>{{ hiddenControl.value ? 'visibility_off' : 'visibility' }}</mat-icon>
                   </button>
                 }
+
+                <button mat-icon-button aria-label="Hide button" matTooltip="Counters" (click)="onCounters(row)">
+                  <mat-icon>calculate</mat-icon>
+                </button>
+
                 @if (row.types.size === 1 && row.types.has('boolean')) {
                   @if (getFormatterTooltip(row.key); as tooltip) {
                     <button

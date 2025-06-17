@@ -15,6 +15,7 @@ import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '..
 import { DialogService } from '../../../../../core/services/dialog.service';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CountersDialogComponent } from './counters-dialog/counters-dialog.component';
 
 @Component({
   selector: 'app-export-dialog',
@@ -153,6 +154,10 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
         }
       }
     });
+  }
+
+  public onCounters({ key }: MetadataFieldConfig): void {
+    this._dialogService.openSmall(CountersDialogComponent, {}).subscribe();
   }
 
   public onFormater({ key }: MetadataFieldConfig): void {

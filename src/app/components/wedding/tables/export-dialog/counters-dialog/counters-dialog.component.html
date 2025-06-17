@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Counters</h2>
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <mat-card appearance="outlined" class="dialog-card">
+      <mat-card-header>
+        <mat-card-title> Counters list </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-table [dataSource]="tempData" class="mat-elevation-z8">
+          <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+            <mat-cell *matCellDef="let row"> </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="label">
+            <mat-header-cell *matHeaderCellDef>Label</mat-header-cell>
+            <mat-cell *matCellDef="let row"> </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="values">
+            <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
+            <mat-cell *matCellDef="let row"> </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columns"></mat-row>
+        </mat-table>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button id="accept" mat-button (click)="accept()" [disabled]="!isValid">Accept</button>
+</mat-dialog-actions>
