@@ -1,6 +1,5 @@
 import { Component, computed, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../../../../core/stores';
-import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -14,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/boolean-formatter-dialog.component';
 import { WeddingMetadataStore } from '../../../../../core/stores/wedding-metadata.store';
 import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../core/abstractions';
+import { DialogService } from '../../../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-export-dialog',
@@ -33,7 +33,7 @@ import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '..
 export class ExportDialogComponent extends DialogFormBaseComponent {
   private readonly _weddingStore = inject(WeddingStore);
   private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
-  private readonly _dialog = inject(MatDialog);
+  private readonly _dialogService = inject(DialogService);
 
   public readonly allGuestCount: Signal<number> = this._weddingStore.allGuestCount;
   public readonly seatedCount: Signal<number> = computed(() => this._weddingStore.guests().length);
@@ -127,17 +127,11 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
       return;
     }
 
-    const dialogRef = this._dialog.open(BooleanFormatterDialogComponent, {
-      minWidth: 0,
-      maxWidth: '100%',
-      width: '45vw',
-      autoFocus: '#accept',
-      data: { formatterId: formatterIdControl.value },
-    });
-
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntilDestroyed(this._destroyRef))
+    this._dialogService
+      .openSmall<
+        { formatterId: string | null },
+        string | null
+      >(BooleanFormatterDialogComponent, { formatterId: formatterIdControl.value })
       .subscribe((value?: string | null) => {
         if (value !== undefined) {
           formatterIdControl.setValue(value);
