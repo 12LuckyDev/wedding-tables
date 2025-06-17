@@ -1,27 +1,25 @@
-import { Component, computed, effect, inject, signal, Signal, WritableSignal } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WeddingMetadataStore } from '../../../../../../core/stores/wedding-metadata.store';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { BooleanFormatter } from '../../../../../../core/models';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../../core/abstractions';
 
 const ADD_ID = 'ADD';
 
 @Component({
   selector: 'app-boolean-formatter-dialog',
   imports: [
-    MatDialogModule,
-    MatButtonModule,
-    ReactiveFormsModule,
+    DIALOG_IMPORTS,
+    FORM_DIALOG_IMPORTS,
     MatCardModule,
     MatInputModule,
-    MatFormFieldModule,
     MatTableModule,
     MatButtonModule,
     MatIconModule,
@@ -30,8 +28,7 @@ const ADD_ID = 'ADD';
   templateUrl: './boolean-formatter-dialog.component.html',
   styleUrl: './boolean-formatter-dialog.component.scss',
 })
-export class BooleanFormatterDialogComponent {
-  private readonly _dialogRef = inject(MatDialogRef<BooleanFormatterDialogComponent>);
+export class BooleanFormatterDialogComponent extends DialogFormBaseComponent {
   private readonly _data = inject<{ formatterId: string | null }>(MAT_DIALOG_DATA);
 
   private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
@@ -49,9 +46,8 @@ export class BooleanFormatterDialogComponent {
 
   public readonly columns: string[] = ['select', 'true', 'false', 'options'];
 
-  private _formGroup: FormGroup;
-
   constructor() {
+    super();
     this._formGroup = new FormGroup({});
     effect(() => {
       const editedId = this.editedId();
@@ -71,12 +67,8 @@ export class BooleanFormatterDialogComponent {
     });
   }
 
-  public get formGroup(): FormGroup {
-    return this._formGroup;
-  }
-
-  public get isValid(): boolean {
-    return this._formGroup.valid && this.selectedId() !== null;
+  public override get isValid(): boolean {
+    return super.isValid && this.selectedId() !== null;
   }
 
   public getTrueControl(): FormControl | null {
@@ -138,11 +130,7 @@ export class BooleanFormatterDialogComponent {
     this._weddingMetadataStore.removeBooleanFormatter(id);
   }
 
-  public accept(): void {
-    this._dialogRef.close(this.selectedId());
-  }
-
-  public cancel(): void {
-    this._dialogRef.close();
+  public override accept(): void {
+    this.close(this.selectedId());
   }
 }

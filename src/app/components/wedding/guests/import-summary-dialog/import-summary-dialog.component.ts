@@ -1,51 +1,47 @@
 import { Component, inject } from '@angular/core';
 import { GroupImportSummaryModel, GroupImportType, Guest, GuestImportSummaryModel } from '../../../../../core/models';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { WeddingStore } from '../../../../../core/stores';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { v4 as uuidv4 } from 'uuid';
 import { GroupListComponent } from './group-list/group-list.component';
+import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../core/abstractions';
 
 @Component({
   selector: 'app-import-summary-dialog',
   imports: [
-    MatButtonModule,
-    MatDialogModule,
+    DIALOG_IMPORTS,
+    FORM_DIALOG_IMPORTS,
     MatCardModule,
     MatDividerModule,
-    MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
     GroupListComponent,
-    ReactiveFormsModule,
   ],
   templateUrl: './import-summary-dialog.component.html',
   styleUrl: './import-summary-dialog.component.scss',
 })
-export class ImportSummaryDialogComponent {
+export class ImportSummaryDialogComponent extends DialogFormBaseComponent {
   private readonly _weddingStore = inject(WeddingStore);
-  private readonly _dialogRef = inject(MatDialogRef<ImportSummaryDialogComponent>);
   public readonly data = inject<{ guestsToImport: GuestImportSummaryModel }>(MAT_DIALOG_DATA);
 
-  private _groupsForm: FormGroup;
   private _groupsOptions: Map<number, { id: string; label: string }[]> = new Map<
     number,
     { id: string; label: string }[]
   >();
 
   constructor() {
-    this._groupsForm = new FormGroup({});
+    super();
+    this._formGroup = new FormGroup({});
     const { groups } = this.data.guestsToImport;
 
     groups.forEach(({ type, groupIds, possibleGroupsGuests }, index) => {
       if (type === GroupImportType.manyGroups) {
-        this._groupsForm.addControl(index.toString(), new FormControl(null, [Validators.required]));
+        this._formGroup.addControl(index.toString(), new FormControl(null, [Validators.required]));
         const options = groupIds.map((id) => ({
           id,
           label: possibleGroupsGuests
@@ -67,16 +63,8 @@ export class ImportSummaryDialogComponent {
     return this.data.guestsToImport.groups;
   }
 
-  public get groupsForm(): FormGroup {
-    return this._groupsForm;
-  }
-
-  public get isValid(): boolean {
-    return this._groupsForm.valid;
-  }
-
   public getSelectedGroupId(index: number): string | null {
-    return this._groupsForm.get(index.toString())?.value ?? null;
+    return this._formGroup.get(index.toString())?.value ?? null;
   }
 
   public getGroupTitle(group: GroupImportSummaryModel): string {
@@ -105,12 +93,12 @@ export class ImportSummaryDialogComponent {
     return this._groupsOptions.get(index) ?? null;
   }
 
-  public accept(): void {
+  public override accept(): void {
     const { groups, ...rest } = this.data.guestsToImport;
     const result = {
       ...rest,
       groups: groups.map((group, i) => {
-        const control = this._groupsForm.get(i.toString());
+        const control = this._formGroup.get(i.toString());
         if (control) {
           return { ...group, groupIds: [control.value] };
         }
@@ -119,10 +107,6 @@ export class ImportSummaryDialogComponent {
     };
 
     this._weddingStore.importGuests(result);
-    this._dialogRef.close();
-  }
-
-  public cancel(): void {
-    this._dialogRef.close();
+    this.close();
   }
 }

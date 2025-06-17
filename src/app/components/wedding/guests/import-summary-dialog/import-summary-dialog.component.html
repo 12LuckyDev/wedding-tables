@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Guests import summary</h2>
 <mat-dialog-content>
-  <form [formGroup]="groupsForm">
+  <form [formGroup]="formGroup">
     @for (group of groups; let index = $index; track index) {
       <mat-card appearance="outlined" class="dialog-card">
         <mat-card-header>

@@ -1,42 +1,36 @@
-import { Component, computed, DestroyRef, inject, Signal } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { WeddingStore } from '../../../../../core/stores';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { ExportConfig, MetadataFieldConfig, Table } from '../../../../../core/models';
 import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { saveAs } from 'file-saver';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/boolean-formatter-dialog.component';
 import { WeddingMetadataStore } from '../../../../../core/stores/wedding-metadata.store';
+import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../core/abstractions';
 
 @Component({
   selector: 'app-export-dialog',
   imports: [
-    MatDialogModule,
-    MatButtonModule,
-    ReactiveFormsModule,
+    DIALOG_IMPORTS,
+    FORM_DIALOG_IMPORTS,
     MatSlideToggleModule,
     MatCardModule,
     MatListModule,
     MatInputModule,
-    MatFormFieldModule,
     MatTableModule,
-    MatButtonModule,
     MatIconModule,
   ],
   templateUrl: './export-dialog.component.html',
   styleUrl: './export-dialog.component.scss',
 })
-export class ExportDialogComponent {
-  private readonly _destroyRef = inject(DestroyRef);
-  private readonly _dialogRef = inject(MatDialogRef<ExportDialogComponent>);
+export class ExportDialogComponent extends DialogFormBaseComponent {
   private readonly _weddingStore = inject(WeddingStore);
   private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
   private readonly _dialog = inject(MatDialog);
@@ -46,23 +40,15 @@ export class ExportDialogComponent {
   public readonly tables: Signal<Table[]> = this._weddingStore.tables;
 
   public readonly columns: string[] = ['key', 'hidden', 'label', 'formatter'];
-  private _exportForm: FormGroup;
   private _metadataConfig!: Map<string, MetadataFieldConfig>;
 
   constructor() {
-    this._exportForm = new FormGroup({
+    super();
+    this._formGroup = new FormGroup({
       anonymize: new FormControl(false),
     });
 
     this.setMetaForm();
-  }
-
-  public get exportForm(): FormGroup {
-    return this._exportForm;
-  }
-
-  public get isValid(): boolean {
-    return this._exportForm.valid;
   }
 
   public get hasMetadata(): boolean {
@@ -74,11 +60,11 @@ export class ExportDialogComponent {
   }
 
   public getLabelControl(key: string): FormControl | null {
-    return this._exportForm.get(`meta.${key}.label`) as FormControl | null;
+    return this._formGroup.get(`meta.${key}.label`) as FormControl | null;
   }
 
   public getHiddenControl(key: string): FormControl | null {
-    return this._exportForm.get(`meta.${key}.hidden`) as FormControl | null;
+    return this._formGroup.get(`meta.${key}.hidden`) as FormControl | null;
   }
 
   private setMetaForm(): void {
@@ -89,8 +75,8 @@ export class ExportDialogComponent {
 
     const showMetadataControl = new FormControl(true);
     const saveMetaConfigControl = new FormControl(false);
-    this._exportForm.addControl('showMetadata', showMetadataControl);
-    this._exportForm.addControl('saveMetaConfig', saveMetaConfigControl);
+    this._formGroup.addControl('showMetadata', showMetadataControl);
+    this._formGroup.addControl('saveMetaConfig', saveMetaConfigControl);
 
     showMetadataControl.valueChanges.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((showMetadata) => {
       if (showMetadata) {
@@ -102,7 +88,7 @@ export class ExportDialogComponent {
     });
 
     const metaForm = new FormGroup({});
-    this._exportForm.addControl('meta', metaForm);
+    this._formGroup.addControl('meta', metaForm);
 
     this._metadataConfig.forEach((metaConfig, metaName) => {
       const metaGroup: FormGroup<{
@@ -126,7 +112,7 @@ export class ExportDialogComponent {
 
   private applyFormToConfig(): void {
     this._metadataConfig.forEach((config, key) => {
-      const keyGroup = this._exportForm.get(`meta.${key}`);
+      const keyGroup = this._formGroup.get(`meta.${key}`);
       if (keyGroup) {
         const keyRawValue = keyGroup.getRawValue();
         config.hidden = keyRawValue.hidden;
@@ -136,7 +122,7 @@ export class ExportDialogComponent {
   }
 
   public onFormater({ key }: MetadataFieldConfig): void {
-    const formatterIdControl = this._exportForm.get(`meta.${key}.formatterId`);
+    const formatterIdControl = this._formGroup.get(`meta.${key}.formatterId`);
     if (!formatterIdControl) {
       return;
     }
@@ -149,24 +135,23 @@ export class ExportDialogComponent {
       data: { formatterId: formatterIdControl.value },
     });
 
-    dialogRef.afterClosed().subscribe((value?: string | null) => {
-      if (value !== undefined) {
-        formatterIdControl.setValue(value);
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe((value?: string | null) => {
+        if (value !== undefined) {
+          formatterIdControl.setValue(value);
+        }
+      });
   }
 
-  public accept(): void {
+  public override accept(): void {
     this.applyFormToConfig();
-    const { anonymize, showMetadata } = this._exportForm.getRawValue();
+    const { anonymize, showMetadata } = this._formGroup.getRawValue();
 
     const config: ExportConfig = { anonymize, showMetadata, metadataConfig: this._metadataConfig };
     const content = this._weddingStore.exportTables(config);
     saveAs(new Blob([content]), 'tables.txt');
-    this._dialogRef.close();
-  }
-
-  public cancel(): void {
-    this._dialogRef.close();
+    this.close();
   }
 }
