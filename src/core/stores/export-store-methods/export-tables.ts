@@ -1,6 +1,20 @@
-import { ExportConfig, Guest, Metadata, MetadataFieldConfig, Table } from '../../../models';
+import { BooleanFormatter, ExportConfig, Guest, Metadata, MetadataFieldConfig, Table } from '../../models';
 
-const buildMetadataLine = (metadataConfig: Map<string, MetadataFieldConfig>, metadata: Metadata): string | null => {
+const applyBooleanFormatter = (value: boolean, formatters: BooleanFormatter[], formatterId?: string): string => {
+  const formatter = formatters.find(({ id }) => id === formatterId);
+
+  if (!formatter) {
+    return String(value);
+  }
+
+  return value ? formatter.trueLabel : formatter.falseLabel;
+};
+
+const buildMetadataLine = (
+  metadataConfig: Map<string, MetadataFieldConfig>,
+  metadata: Metadata,
+  booleanFormatters: BooleanFormatter[],
+): string | null => {
   const builder: string[] = [];
 
   metadataConfig.forEach((config, key) => {
@@ -8,16 +22,19 @@ const buildMetadataLine = (metadataConfig: Map<string, MetadataFieldConfig>, met
       return;
     }
 
-    if (config.hidden) {
+    const { hidden, types, label, formatterId } = config;
+
+    if (hidden) {
       return;
     }
 
     let metadataText = '';
-    if (!!config.label) {
-      metadataText += `${config.label}: `;
+    if (!!label) {
+      metadataText += `${label}: `;
     }
-    metadataText += metadata[key]; //TODO formaters
-    //TODO add filters
+    const isBoolean = types.size === 1 && types.has('boolean');
+    const value = metadata[key];
+    metadataText += isBoolean ? applyBooleanFormatter(value as boolean, booleanFormatters, formatterId) : value;
     //TODO add counters
     builder.push(metadataText);
   });
@@ -29,6 +46,7 @@ export const exportTables = (
   { anonymize, showMetadata, metadataConfig }: ExportConfig,
   tables: Table[],
   allGuests: Map<string, Guest>,
+  booleanFormatters: BooleanFormatter[],
 ): string => {
   const builder: string[] = [];
   tables
@@ -47,7 +65,7 @@ export const exportTables = (
           let line = `\t${name}`;
 
           if (showMetadata && metadata) {
-            const text = buildMetadataLine(metadataConfig, metadata);
+            const text = buildMetadataLine(metadataConfig, metadata, booleanFormatters);
             if (text) {
               line += text;
             }

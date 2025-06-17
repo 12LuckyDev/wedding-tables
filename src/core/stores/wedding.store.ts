@@ -1,14 +1,6 @@
 import { mappify } from '@12luckydev/utils';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import {
-  Table,
-  Guest,
-  Wedding,
-  GuestImportSummaryModel,
-  TableModel,
-  MetadataFieldConfig,
-  ExportConfig,
-} from '..//models';
+import { Table, Guest, Wedding, GuestImportSummaryModel, TableModel, MetadataFieldConfig } from '..//models';
 import { ALL_GUESTS } from './wedding.test-data';
 import { computed, Signal } from '@angular/core';
 import { addTable } from './wedding-store-methods/updaters/add-table';
@@ -21,7 +13,6 @@ import { removeGuestFromTable } from './wedding-store-methods/updaters/remove-gu
 import { moveGuestInList } from './wedding-store-methods/updaters/move-guest-in-list';
 import { importGuest } from './wedding-store-methods/updaters/import-guest';
 import { collectMedatada } from './wedding-store-methods/getters/collect-medatada';
-import { exportTables } from './wedding-store-methods/getters/export-tables';
 
 export const WeddingStore = signalStore(
   { providedIn: 'root' },
@@ -54,6 +45,9 @@ export const WeddingStore = signalStore(
     getTable(number: Signal<number | undefined>): Signal<Table | null> {
       return computed(() => state.tables().find((t) => t.number === number()) ?? null);
     },
+    getAllGuestMap() {
+      return new Map(state._allGuests());
+    },
     getGuest(guestId: Signal<string | null>): Signal<Guest | null> {
       return computed(() => {
         const id = guestId();
@@ -66,9 +60,6 @@ export const WeddingStore = signalStore(
       const allGuestIds = [...allGuests.keys()];
       const assignedGuests = allGuestIds.filter((id) => !guestIds.includes(id)).map((id) => allGuests.get(id)!);
       return collectMedatada(assignedGuests);
-    },
-    exportTables(config: ExportConfig): string {
-      return exportTables(config, state.tables(), state._allGuests());
     },
     addTable() {
       patchState(state, addTable);

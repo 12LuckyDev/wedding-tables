@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, Signal } from '@angular/core';
-import { WeddingStore } from '../../../../../core/stores';
+import { WeddingExportStore, WeddingMetadataStore, WeddingStore } from '../../../../../core/stores';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,6 @@ import { saveAs } from 'file-saver';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/boolean-formatter-dialog.component';
-import { WeddingMetadataStore } from '../../../../../core/stores/wedding-metadata.store';
 import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../core/abstractions';
 import { DialogService } from '../../../../../core/services/dialog.service';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -31,11 +30,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatBadgeModule,
     MatTooltipModule,
   ],
+  providers: [WeddingExportStore],
   templateUrl: './export-dialog.component.html',
   styleUrl: './export-dialog.component.scss',
 })
 export class ExportDialogComponent extends DialogFormBaseComponent {
   private readonly _weddingStore = inject(WeddingStore);
+  private readonly _weddingExportStore = inject(WeddingExportStore);
   private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
   private readonly _dialogService = inject(DialogService);
 
@@ -85,7 +86,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
 
   public getFormatterTooltip(key: string): string | null {
     const control = this._formGroup.get(`meta.${key}.formatterId`);
-    const formatter = control ? this.booleanFormatters().find(({ id }) => control.value) : null;
+    const formatter = control ? this.booleanFormatters().find(({ id }) => id === control.value) : null;
     return formatter ? `${formatter.trueLabel} / ${formatter.falseLabel}` : null;
   }
 
@@ -147,6 +148,9 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
         const keyRawValue = keyGroup.getRawValue();
         config.hidden = keyRawValue.hidden;
         config.label = keyRawValue.label;
+        if (keyRawValue.formatterId) {
+          config.formatterId = keyRawValue.formatterId;
+        }
       }
     });
   }
@@ -174,7 +178,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     const { anonymize, showMetadata } = this._formGroup.getRawValue();
 
     const config: ExportConfig = { anonymize, showMetadata, metadataConfig: this._metadataConfig };
-    const content = this._weddingStore.exportTables(config);
+    const content = this._weddingExportStore.exportTables(config);
     saveAs(new Blob([content]), 'tables.txt');
     this.close();
   }

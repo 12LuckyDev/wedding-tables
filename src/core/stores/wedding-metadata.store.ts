@@ -19,17 +19,16 @@ export const WeddingMetadataStore = signalStore(
     }),
   })),
   withMethods((state) => ({
-    addBooleanFormatter(trueLabel: string, falseLabel: string) {
+    addBooleanFormatter(trueLabel: string, falseLabel: string): string {
+      const id = uuidv4();
       patchState(
         state,
         ({ _customBooleanFormatters, ...oldState }): WeddingMetadata => ({
           ...oldState,
-          _customBooleanFormatters: [
-            ..._customBooleanFormatters,
-            { id: uuidv4(), editable: true, trueLabel, falseLabel },
-          ],
+          _customBooleanFormatters: [..._customBooleanFormatters, { id, editable: true, trueLabel, falseLabel }],
         }),
       );
+      return id;
     },
     removeBooleanFormatter(id: string) {
       patchState(

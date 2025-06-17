@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, signal, WritableSignal } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { WeddingMetadataStore } from '../../../../../../core/stores/wedding-metadata.store';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -98,7 +98,8 @@ export class BooleanFormatterDialogComponent extends DialogFormBaseComponent {
     if (trueLabel && falseLabel) {
       this.editedId.set(null);
       this.adding.set(false);
-      this._weddingMetadataStore.addBooleanFormatter(trueLabel, falseLabel);
+      const newId = this._weddingMetadataStore.addBooleanFormatter(trueLabel, falseLabel);
+      this.selectedId.set(newId);
     }
   }
 
