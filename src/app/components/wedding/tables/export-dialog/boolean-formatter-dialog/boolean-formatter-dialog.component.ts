@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { BooleanFormatter } from '../../../../../../core/models';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 const ADD_ID = 'ADD';
 
@@ -24,6 +25,7 @@ const ADD_ID = 'ADD';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
+    MatCheckboxModule,
   ],
   templateUrl: './boolean-formatter-dialog.component.html',
   styleUrl: './boolean-formatter-dialog.component.scss',
@@ -45,7 +47,7 @@ export class BooleanFormatterDialogComponent {
       : this._weddingMetadataStore.booleanFormatters(),
   );
 
-  public readonly columns: string[] = ['true', 'false', 'options'];
+  public readonly columns: string[] = ['select', 'true', 'false', 'options'];
 
   private _formGroup: FormGroup;
 
@@ -74,7 +76,7 @@ export class BooleanFormatterDialogComponent {
   }
 
   public get isValid(): boolean {
-    return this._formGroup.valid;
+    return this._formGroup.valid && this.selectedId() !== null;
   }
 
   public getTrueControl(): FormControl | null {
@@ -83,6 +85,14 @@ export class BooleanFormatterDialogComponent {
 
   public getFalseControl(): FormControl | null {
     return this._formGroup.get('falseLabel') as FormControl | null;
+  }
+
+  public select(id: string): void {
+    if (id === this.selectedId()) {
+      this.selectedId.set(null);
+    } else {
+      this.selectedId.set(id);
+    }
   }
 
   public add(): void {
@@ -129,7 +139,7 @@ export class BooleanFormatterDialogComponent {
   }
 
   public accept(): void {
-    this._dialogRef.close();
+    this._dialogRef.close(this.selectedId());
   }
 
   public cancel(): void {

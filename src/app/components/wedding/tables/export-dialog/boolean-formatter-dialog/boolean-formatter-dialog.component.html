@@ -7,6 +7,13 @@
       </mat-card-header>
       <mat-card-content>
         <table mat-table [dataSource]="tableFormatters()" class="mat-elevation-z8">
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox [checked]="selectedId() === row.id" (change)="select(row.id)" />
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="true">
             <th mat-header-cell *matHeaderCellDef>True label</th>
             <td mat-cell *matCellDef="let row">
