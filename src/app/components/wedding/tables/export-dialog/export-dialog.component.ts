@@ -45,7 +45,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
   public readonly seatedCount: Signal<number> = computed(() => this._weddingStore.guests().length);
   public readonly tables: Signal<Table[]> = this._weddingStore.tables;
 
-  public readonly columns: string[] = ['key', 'hidden', 'label', 'formatter'];
+  public readonly columns: string[] = ['key', 'label', 'options'];
   private _metadataConfig!: Map<string, MetadataFieldConfig>;
 
   constructor() {

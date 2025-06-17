@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { BooleanFormatter } from '../../../../../../core/models';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '../../../../../../core/abstractions';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const ADD_ID = 'ADD';
 
@@ -24,6 +25,7 @@ const ADD_ID = 'ADD';
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
+    MatTooltipModule,
   ],
   templateUrl: './boolean-formatter-dialog.component.html',
   styleUrl: './boolean-formatter-dialog.component.scss',

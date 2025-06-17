@@ -6,17 +6,17 @@
         <mat-card-title> Choose formater </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <table mat-table [dataSource]="tableFormatters()" class="mat-elevation-z8">
+        <mat-table [dataSource]="tableFormatters()" class="mat-elevation-z8">
           <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let row">
               <mat-checkbox [checked]="selectedId() === row.id" (change)="select(row.id)" />
-            </td>
+            </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="true">
-            <th mat-header-cell *matHeaderCellDef>True label</th>
-            <td mat-cell *matCellDef="let row">
+            <mat-header-cell *matHeaderCellDef>True label</mat-header-cell>
+            <mat-cell *matCellDef="let row">
               @if (editedId() === row.id) {
                 @if (getTrueControl(); as control) {
                   <mat-form-field>
@@ -26,12 +26,12 @@
               } @else {
                 {{ row.trueLabel }}
               }
-            </td>
+            </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="false">
-            <th mat-header-cell *matHeaderCellDef>False label</th>
-            <td mat-cell *matCellDef="let row">
+            <mat-header-cell *matHeaderCellDef>False label</mat-header-cell>
+            <mat-cell *matCellDef="let row">
               @if (editedId() === row.id) {
                 @if (getFalseControl(); as control) {
                   <mat-form-field>
@@ -41,37 +41,44 @@
               } @else {
                 {{ row.falseLabel }}
               }
-            </td>
+            </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="options">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let row">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let row">
               @if (row.editable) {
                 @if (editedId() === row.id) {
                   <button
                     mat-icon-button
                     aria-label="Save button"
+                    matTooltip="Save"
                     (click)="adding() ? saveAdd() : saveEdit()"
                     [disabled]="!isValid"
                   >
                     <mat-icon>save</mat-icon>
                   </button>
                 } @else {
-                  <button mat-icon-button aria-label="Edit button" (click)="edit(row)" [disabled]="editedId() !== null">
+                  <button
+                    mat-icon-button
+                    aria-label="Edit button"
+                    matTooltip="Edit"
+                    (click)="edit(row)"
+                    [disabled]="editedId() !== null"
+                  >
                     <mat-icon>edit</mat-icon>
                   </button>
                 }
-                <button mat-icon-button aria-label="Delete button" (click)="remove(row)">
+                <button matIconButton aria-label="Delete button" matTooltip="Delete" (click)="remove(row)">
                   <mat-icon>delete</mat-icon>
                 </button>
               }
-            </td>
+            </mat-cell>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columns"></tr>
-          <tr mat-row *matRowDef="let row; columns: columns"></tr>
-        </table>
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columns"></mat-row>
+        </mat-table>
 
         <button
           class="add-formatter-button"
