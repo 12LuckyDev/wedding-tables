@@ -107,8 +107,8 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
 
     const showMetadataControl = new FormControl(true);
     const saveMetaConfigControl = new FormControl(false);
-    this._formGroup.addControl('showMetadata', showMetadataControl);
-    this._formGroup.addControl('saveMetaConfig', saveMetaConfigControl);
+    this.addControl('showMetadata', showMetadataControl);
+    this.addControl('saveMetaConfig', saveMetaConfigControl);
 
     showMetadataControl.valueChanges.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((showMetadata) => {
       if (showMetadata) {
@@ -120,7 +120,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     });
 
     const metaForm = new FormGroup({});
-    this._formGroup.addControl('meta', metaForm);
+    this.addControl('meta', metaForm);
 
     this._metadataConfig.forEach((metaConfig, metaName) => {
       const metaGroup: FormGroup<{
@@ -156,8 +156,8 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     });
   }
 
-  public onCounters({ key }: MetadataFieldConfig): void {
-    this._dialogService.openSmall(CountersDialogComponent, {}).subscribe();
+  public onCounters(config: MetadataFieldConfig): void {
+    this._dialogService.openMedium(CountersDialogComponent, { config }).subscribe();
   }
 
   public onFormater({ key }: MetadataFieldConfig): void {

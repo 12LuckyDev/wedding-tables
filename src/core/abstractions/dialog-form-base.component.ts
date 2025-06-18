@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DialogBaseComponent } from './dialog-base.component';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 export const FORM_DIALOG_IMPORTS = [ReactiveFormsModule, MatFormFieldModule];
@@ -15,5 +15,9 @@ export abstract class DialogFormBaseComponent extends DialogBaseComponent {
 
   public get isValid(): boolean {
     return this._formGroup.valid;
+  }
+
+  protected addControl(key: string, control: AbstractControl): void {
+    this._formGroup.addControl(key, control);
   }
 }

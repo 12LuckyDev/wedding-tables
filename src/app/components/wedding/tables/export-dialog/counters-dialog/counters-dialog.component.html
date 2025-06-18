@@ -6,25 +6,63 @@
         <mat-card-title> Counters list </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <mat-table [dataSource]="tempData" class="mat-elevation-z8">
-          <ng-container matColumnDef="type">
-            <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
-            <mat-cell *matCellDef="let row"> </mat-cell>
+        <mat-table [dataSource]="countersRows" class="mat-elevation-z8" formArrayName="counters">
+          <ng-container matColumnDef="scope">
+            <mat-header-cell *matHeaderCellDef>Scope</mat-header-cell>
+            <mat-cell *matCellDef="let i = index" [formGroupName]="i">
+              <div class="scope-container" formGroupName="scope">
+                <mat-slide-toggle class="scope-slide-toggle" formControlName="table">Table</mat-slide-toggle>
+                <mat-slide-toggle class="scope-slide-toggle" formControlName="global">Global</mat-slide-toggle>
+              </div>
+            </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="label">
             <mat-header-cell *matHeaderCellDef>Label</mat-header-cell>
-            <mat-cell *matCellDef="let row"> </mat-cell>
+            <mat-cell *matCellDef="let i = index" [formGroupName]="i">
+              <mat-form-field>
+                <input matInput placeholder="Enter label text" formControlName="label" />
+                @if (getLabelControl(i); as labelControl) {
+                  <button
+                    matSuffix
+                    matIconButton
+                    aria-label="Clear"
+                    [disabled]="!labelControl.value"
+                    (click)="labelControl.setValue('')"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              </mat-form-field>
+            </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="values">
             <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
-            <mat-cell *matCellDef="let row"> </mat-cell>
+            <mat-cell *matCellDef="let i = index" [formGroupName]="i">
+              <mat-form-field>
+                <mat-select formControlName="values" multiple>
+                  @for (value of values; track value) {
+                    <mat-option [value]="value" [matTooltip]="value.toString()">{{ value }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="options">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let i = index" [formGroupName]="i"> </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: columns"></mat-row>
         </mat-table>
+
+        <button class="add-counter-button" matButton="filled" aria-label="Add button" (click)="add()">
+          Add new
+          <mat-icon>add</mat-icon>
+        </button>
       </mat-card-content>
     </mat-card>
   </form>

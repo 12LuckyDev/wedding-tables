@@ -19,6 +19,24 @@ export class DialogService {
     return destroyRef ? observable.pipe(takeUntilDestroyed(destroyRef)) : observable;
   }
 
+  public openBig<T, R = unknown | undefined>(
+    component: Type<unknown>,
+    data: T,
+    destroyRef?: DestroyRef,
+  ): Observable<R> {
+    return this.open<T, R>(
+      component,
+      {
+        minWidth: 0,
+        maxWidth: '100%',
+        width: '85vw',
+        autoFocus: '#accept',
+        data,
+      },
+      destroyRef,
+    );
+  }
+
   public openMedium<T, R = unknown | undefined>(
     component: Type<unknown>,
     data: T,
