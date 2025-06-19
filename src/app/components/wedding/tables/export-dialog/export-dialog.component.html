@@ -94,7 +94,15 @@
                   </button>
                 }
 
-                <button mat-icon-button aria-label="Hide button" matTooltip="Counters" (click)="onCounters(row)">
+                <button
+                  matIconButton
+                  class="counters-button"
+                  [matBadge]="row.counters.length"
+                  matBadgeSize="large"
+                  aria-label="Counters button"
+                  matTooltip="Counters"
+                  (click)="onCounters(row)"
+                >
                   <mat-icon>calculate</mat-icon>
                 </button>
 

@@ -13,6 +13,9 @@
               <div class="scope-container" formGroupName="scope">
                 <mat-slide-toggle class="scope-slide-toggle" formControlName="table">Table</mat-slide-toggle>
                 <mat-slide-toggle class="scope-slide-toggle" formControlName="global">Global</mat-slide-toggle>
+                @if (hasScopeError(i)) {
+                  <mat-error>At least one scope option is reguired</mat-error>
+                }
               </div>
             </mat-cell>
           </ng-container>
@@ -52,7 +55,11 @@
 
           <ng-container matColumnDef="options">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let i = index" [formGroupName]="i"> </mat-cell>
+            <mat-cell *matCellDef="let i = index" [formGroupName]="i">
+              <button mat-icon-button aria-label="Delete button" matTooltip="Counters" (click)="delete(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="columns"></mat-header-row>

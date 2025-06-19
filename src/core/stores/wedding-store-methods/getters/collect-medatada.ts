@@ -19,6 +19,7 @@ export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfi
           types: new Set<MetadataFieldType>([type]),
           values: new Set<MetadataField>([value]),
           hidden: false,
+          counters: [],
         });
         continue;
       }

@@ -8,16 +8,16 @@
   flex-direction: column;
 
   .scope-slide-toggle:not(:last-of-type) {
-    margin-bottom: 0.5rem;
+    margin-block: 0.5rem;
   }
 }
 
+.mat-column-scope,
 .mat-column-label,
 .mat-column-values {
   flex: 2 0;
 }
 
-.mat-column-scope,
 .mat-column-options {
   flex: 1 0;
 }

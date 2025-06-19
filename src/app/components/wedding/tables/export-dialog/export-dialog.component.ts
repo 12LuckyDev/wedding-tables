@@ -4,7 +4,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { BooleanFormatter, ExportConfig, MetadataFieldConfig, Table } from '../../../../../core/models';
+import {
+  BooleanFormatter,
+  ExportConfig,
+  MetadataCounter,
+  MetadataFieldConfig,
+  Table,
+} from '../../../../../core/models';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { saveAs } from 'file-saver';
@@ -157,7 +163,14 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
   }
 
   public onCounters(config: MetadataFieldConfig): void {
-    this._dialogService.openMedium(CountersDialogComponent, { config }).subscribe();
+    this._dialogService
+      .openMedium<{ config: MetadataFieldConfig }, MetadataCounter[] | undefined>(CountersDialogComponent, { config })
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe((newCounters?: MetadataCounter[]) => {
+        if (newCounters) {
+          config.counters = newCounters;
+        }
+      });
   }
 
   public onFormater({ key }: MetadataFieldConfig): void {
@@ -167,10 +180,10 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     }
 
     this._dialogService
-      .openSmall<
-        { formatterId: string | null },
-        string | null
-      >(BooleanFormatterDialogComponent, { formatterId: formatterIdControl.value })
+      .openSmall<{ formatterId: string | null }, string | null>(BooleanFormatterDialogComponent, {
+        formatterId: formatterIdControl.value,
+      })
+      .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe((value?: string | null) => {
         if (value !== undefined) {
           formatterIdControl.setValue(value);
