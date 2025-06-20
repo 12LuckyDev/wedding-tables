@@ -97,10 +97,11 @@ export class CountersDialogComponent extends DialogFormBaseComponent {
   }
 
   public add(counter?: MetadataCounter): void {
+    const { key, values } = this._data.config;
     this.countersControl.push(
       new FormGroup({
-        label: new FormControl(counter?.label ?? sentenceCase(this._data.config.key)),
-        values: new FormControl(counter?.values ?? []),
+        label: new FormControl(counter?.label ?? sentenceCase(key)),
+        values: new FormControl(counter?.values ?? (values.size === 1 ? [...values] : [])),
         scope: new FormGroup(
           {
             table: new FormControl(counter?.scope.table ?? true),
