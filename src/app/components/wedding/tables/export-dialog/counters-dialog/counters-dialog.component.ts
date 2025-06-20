@@ -58,8 +58,7 @@ export class CountersDialogComponent extends DialogFormBaseComponent {
     this.assignCountersToForm();
 
     const { formatterId, config, booleanFormatters } = this._data;
-    const { types, values } = config;
-    const isBoolean = types.size === 1 && types.has('boolean');
+    const { values, isBoolean } = config;
     const formatter = booleanFormatters.find(({ id }) => id === formatterId);
     this._values = [...values].map((v) => {
       if (isBoolean && typeof v === 'boolean') {

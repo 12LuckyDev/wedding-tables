@@ -1,5 +1,4 @@
-import { Guest, MetadataField, MetadataFieldConfig, MetadataFieldType } from '../../../models';
-import { sentenceCase } from 'change-case';
+import { Guest, MetadataField, MetadataFieldConfig, MetadataFieldConfigModel } from '../../../models';
 
 export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfig> => {
   const map = new Map<string, MetadataFieldConfig>();
@@ -10,23 +9,14 @@ export const collectMedatada = (guests: Guest[]): Map<string, MetadataFieldConfi
 
     for (const key in metadata) {
       const value: MetadataField = metadata[key];
-      const type: MetadataFieldType = typeof value as MetadataFieldType;
 
       if (!map.has(key)) {
-        map.set(key, {
-          key,
-          label: sentenceCase(key),
-          types: new Set<MetadataFieldType>([type]),
-          values: new Set<MetadataField>([value]),
-          hidden: false,
-          counters: [],
-        });
+        map.set(key, new MetadataFieldConfigModel(key, value));
         continue;
       }
 
-      const fieldType = map.get(key)!;
-      fieldType.types.add(type);
-      fieldType.values.add(value);
+      const fieldConfig = map.get(key)!;
+      fieldConfig.addValue(value);
     }
   });
 

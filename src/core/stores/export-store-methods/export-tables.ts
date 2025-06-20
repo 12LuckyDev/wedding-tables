@@ -30,7 +30,7 @@ const buildMetadataLine = (
       return;
     }
 
-    const { hidden, types, label, formatterId } = config;
+    const { hidden, label, formatterId, isBoolean } = config;
 
     if (hidden) {
       return;
@@ -40,7 +40,6 @@ const buildMetadataLine = (
     if (!!label) {
       metadataText += `${label}: `;
     }
-    const isBoolean = types.size === 1 && types.has('boolean');
     const value = metadata[key];
     metadataText += isBoolean ? applyBooleanFormatter(value as boolean, booleanFormatters, formatterId) : value;
     builder.push(metadataText);
@@ -58,7 +57,7 @@ const buildCountersText = (
   const builder: string[] = [];
 
   metadataConfig.forEach((config, key) => {
-    const { counters, formatterId } = config;
+    const { counters, isBoolean, formatterId } = config;
     const filteredCounters = global
       ? counters.filter(({ scope }) => scope.global)
       : counters.filter(({ scope }) => scope.table);
@@ -81,21 +80,23 @@ const buildCountersText = (
 
       if (values.length === 1) {
         const [valueCount] = count.values();
-        const [value] = count.keys(); //TODO formaters
+        const [value] = count.keys();
+        const formatted = isBoolean ? applyBooleanFormatter(value as boolean, booleanFormatters, formatterId) : value;
 
-        builder.push(`${label ?? value}: ${valueCount}`);
+        builder.push(`${label ?? formatted}: ${valueCount}`);
       } else {
         if (label) {
           builder.push(`\n${label}:`);
         }
         count.forEach((valueCount, value) => {
-          builder.push(`\t${value}: ${valueCount}`);
+          const formatted = isBoolean ? applyBooleanFormatter(value as boolean, booleanFormatters, formatterId) : value;
+          builder.push(`\t${formatted}: ${valueCount}`);
         });
       }
     });
   });
 
-  return builder.length > 0 ? `\t${builder.join('\n')}` : null;
+  return builder.length > 0 ? builder.join('\n') : null;
 };
 
 export const exportTables = (
@@ -104,12 +105,14 @@ export const exportTables = (
   allGuests: Map<string, Guest>,
   booleanFormatters: BooleanFormatter[],
 ): string => {
+  const sittedGuests: Guest[] = [];
   const builder: string[] = [];
 
   tables
     .toSorted((a, b) => a.number - b.number)
     .forEach(({ number, chairs }) => {
       const guests: Guest[] = chairs.filter((id) => !!id).map((id) => allGuests.get(id!)!);
+      sittedGuests.push(...guests);
 
       if (guests.length === 0) {
         return;
@@ -131,17 +134,19 @@ export const exportTables = (
           builder.push(line);
         });
       }
-      builder.push('\n');
 
       const tableCountersText = buildCountersText(guests, metadataConfig, booleanFormatters, false);
       if (tableCountersText) {
+        builder.push('');
         builder.push(tableCountersText);
       }
+
+      builder.push('');
     });
 
-  const globalCountersText = buildCountersText([...allGuests.values()], metadataConfig, booleanFormatters, false);
+  const globalCountersText = buildCountersText(sittedGuests, metadataConfig, booleanFormatters, true);
   if (globalCountersText) {
-    builder.push('\n');
+    builder.push('');
     builder.push(globalCountersText);
   }
 
