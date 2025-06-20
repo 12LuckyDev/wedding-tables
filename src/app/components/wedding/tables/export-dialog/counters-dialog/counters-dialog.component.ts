@@ -48,7 +48,6 @@ export interface CountersDialogData {
 })
 export class CountersDialogComponent extends DialogFormBaseComponent {
   private readonly _data = inject<CountersDialogData>(MAT_DIALOG_DATA);
-  // TODO usage of counters
 
   public readonly columns: string[] = ['scope', 'label', 'values', 'options'];
   private readonly _values: { id: MetadataField; name: string }[];
