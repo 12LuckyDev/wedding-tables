@@ -21,7 +21,7 @@ import { DIALOG_IMPORTS, DialogFormBaseComponent, FORM_DIALOG_IMPORTS } from '..
 import { DialogService } from '../../../../../core/services/dialog.service';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CountersDialogComponent } from './counters-dialog/counters-dialog.component';
+import { CountersDialogComponent, CountersDialogData } from './counters-dialog/counters-dialog.component';
 
 @Component({
   selector: 'app-export-dialog',
@@ -91,9 +91,13 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     return [...this._metadataConfig.values()];
   }
 
+  private getFormatterValue(key: string): string | undefined {
+    return this._formGroup.get(`meta.${key}.formatterId`)?.value;
+  }
+
   public getFormatterTooltip(key: string): string | null {
-    const control = this._formGroup.get(`meta.${key}.formatterId`);
-    const formatter = control ? this.booleanFormatters().find(({ id }) => id === control.value) : null;
+    const value = this.getFormatterValue(key);
+    const formatter = value ? this.booleanFormatters().find(({ id }) => id === value) : null;
     return formatter ? `${formatter.trueLabel} / ${formatter.falseLabel}` : null;
   }
 
@@ -164,7 +168,11 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
 
   public onCounters(config: MetadataFieldConfig): void {
     this._dialogService
-      .openMedium<{ config: MetadataFieldConfig }, MetadataCounter[] | undefined>(CountersDialogComponent, { config })
+      .openMedium<CountersDialogData, MetadataCounter[] | undefined>(CountersDialogComponent, {
+        config,
+        booleanFormatters: this.booleanFormatters(),
+        formatterId: this.getFormatterValue(config.key),
+      })
       .pipe(takeUntilDestroyed(this._destroyRef))
       .subscribe((newCounters?: MetadataCounter[]) => {
         if (newCounters) {

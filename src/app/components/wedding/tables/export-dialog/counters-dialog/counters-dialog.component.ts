@@ -11,7 +11,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, V
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MetadataCounter, MetadataField, MetadataFieldConfig } from '../../../../../../core/models';
+import { BooleanFormatter, MetadataCounter, MetadataField, MetadataFieldConfig } from '../../../../../../core/models';
 import { sentenceCase } from 'change-case';
 
 function createScopeValidator(): ValidatorFn {
@@ -20,6 +20,12 @@ function createScopeValidator(): ValidatorFn {
 
     return table || global ? null : { anyScopeRequired: true };
   };
+}
+
+export interface CountersDialogData {
+  config: MetadataFieldConfig;
+  booleanFormatters: BooleanFormatter[];
+  formatterId?: string;
 }
 
 @Component({
@@ -41,16 +47,29 @@ function createScopeValidator(): ValidatorFn {
   styleUrl: './counters-dialog.component.scss',
 })
 export class CountersDialogComponent extends DialogFormBaseComponent {
-  private readonly _data = inject<{ config: MetadataFieldConfig }>(MAT_DIALOG_DATA);
-  // TODO pass booleanFormater if type is boolean
+  private readonly _data = inject<CountersDialogData>(MAT_DIALOG_DATA);
   // TODO usage of counters
 
   public readonly columns: string[] = ['scope', 'label', 'values', 'options'];
+  private readonly _values: { id: MetadataField; name: string }[];
 
   constructor() {
     super();
     this.addControl('counters', new FormArray([]));
     this.assignCountersToForm();
+
+    const { formatterId, config, booleanFormatters } = this._data;
+    const { types, values } = config;
+    const isBoolean = types.size === 1 && types.has('boolean');
+    const formatter = booleanFormatters.find(({ id }) => id === formatterId);
+    this._values = [...values].map((v) => {
+      if (isBoolean && typeof v === 'boolean') {
+        return v === true
+          ? { id: v, name: formatter?.trueLabel ?? v.toString() }
+          : { id: v, name: formatter?.falseLabel ?? v.toString() };
+      }
+      return { id: v, name: v.toString() };
+    });
   }
 
   public get countersControl(): FormArray {
@@ -61,8 +80,8 @@ export class CountersDialogComponent extends DialogFormBaseComponent {
     return [...this.countersControl.controls];
   }
 
-  public get values(): MetadataField[] {
-    return [...this._data.config.values];
+  public get values(): { id: MetadataField; name: string }[] {
+    return this._values;
   }
 
   private assignCountersToForm(): void {
