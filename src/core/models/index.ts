@@ -16,3 +16,4 @@ export * from './metadata.type';
 export * from './read-guests-file-error.enum';
 export * from './read-guests-file-result.model';
 export * from './table.model';
+export * from './wedding-storage.model';

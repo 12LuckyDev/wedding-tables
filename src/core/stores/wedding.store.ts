@@ -1,8 +1,6 @@
-import { mappify } from '@12luckydev/utils';
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestImportSummaryModel, TableModel, MetadataFieldConfig } from '..//models';
-import { ALL_GUESTS } from './wedding.test-data';
-import { computed, Signal } from '@angular/core';
+import { getState, patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { Table, Guest, Wedding, GuestImportSummaryModel, MetadataFieldConfig } from '..//models';
+import { computed, effect, inject, Signal } from '@angular/core';
 import { addTable } from './wedding-store-methods/updaters/add-table';
 import { removeTable } from './wedding-store-methods/updaters/remove-table';
 import { addChair } from './wedding-store-methods/updaters/add-chair';
@@ -13,14 +11,11 @@ import { removeGuestFromTable } from './wedding-store-methods/updaters/remove-gu
 import { moveGuestInList } from './wedding-store-methods/updaters/move-guest-in-list';
 import { importGuest } from './wedding-store-methods/updaters/import-guest';
 import { collectMedatada } from './wedding-store-methods/getters/collect-medatada';
+import { WeddingStorageService } from '../services/wedding-storage.service';
 
 export const WeddingStore = signalStore(
   { providedIn: 'root' },
-  withState<Wedding>({
-    tables: [new TableModel(1), new TableModel(2), new TableModel(3)],
-    guestIds: ALL_GUESTS.map((el) => el.id),
-    _allGuests: mappify(ALL_GUESTS, 'id'),
-  }),
+  withState<Wedding>(() => inject(WeddingStorageService).getWeddingData()),
   withComputed(({ _allGuests, guestIds, tables }) => ({
     guests: computed(() => {
       const guestMap = _allGuests();
@@ -99,4 +94,18 @@ export const WeddingStore = signalStore(
       patchState(state, (oldState) => importGuest(oldState, summary));
     },
   })),
+  withHooks({
+    onInit(store) {
+      const weddingStorageService = inject(WeddingStorageService);
+      let initialRun = true;
+
+      effect(() => {
+        const state: Wedding = getState(store);
+        if (!initialRun) {
+          weddingStorageService.setWeddingData(state);
+        }
+        initialRun = false;
+      });
+    },
+  }),
 );
