@@ -1,18 +1,16 @@
 import { Component, DestroyRef, inject, Signal } from '@angular/core';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { Guest } from '../../../../core/models';
 import { guestsImport } from '../../../../core/helpers';
 import { ImportSummaryDialogComponent } from './import-summary-dialog/import-summary-dialog.component';
 import { GuestsListComponent } from './guests-list/guests-list.component';
 import { WeddingStore } from '../../../../core/stores';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogService } from '../../../../core/services/dialog.service';
+import { DialogService, ToastService } from '../../../../core/services';
+import selectFiles from 'select-files';
+import { TOOLBAR_IMPORTS } from '../../../../core/imports';
 
 @Component({
   selector: 'app-guests',
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, GuestsListComponent],
+  imports: [TOOLBAR_IMPORTS, GuestsListComponent],
   templateUrl: './guests.component.html',
   styleUrl: './guests.component.scss',
 })
@@ -20,26 +18,22 @@ export class GuestsComponent {
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _weddingStore = inject(WeddingStore);
   private readonly _dialogService = inject(DialogService);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _toastService = inject(ToastService);
 
   public readonly guests: Signal<Guest[]> = this._weddingStore.guests;
 
-  public async onImportQuests(input: HTMLInputElement): Promise<void> {
-    const file = input.files?.[0] ?? null;
-    input.value = '';
+  public async onImportQuests(replace: boolean): Promise<void> {
+    const files: FileList | null = await selectFiles();
+    const file: File | null = files?.[0] ?? null;
 
     if (file) {
-      const guestsToImport = await guestsImport(file, this.guests());
+      const guestsToImport = await guestsImport(file, this._weddingStore.getAllGuest(), replace);
       if (guestsToImport.error) {
-        this._snackBar.open(guestsToImport.error, undefined, {
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          duration: 5000,
-        });
+        this._toastService.open(guestsToImport.error);
         return;
       }
 
-      this._dialogService.openMedium(ImportSummaryDialogComponent, { guestsToImport }, this._destroyRef).subscribe();
+      this._dialogService.openBig(ImportSummaryDialogComponent, { guestsToImport }, this._destroyRef).subscribe();
     }
   }
 

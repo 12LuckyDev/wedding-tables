@@ -1,5 +1,13 @@
 import { getState, patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
-import { Table, Guest, Wedding, GuestImportSummaryModel, MetadataFieldConfig } from '..//models';
+import {
+  Table,
+  Guest,
+  Wedding,
+  GuestImportSummaryModel,
+  WeddingStorageModel,
+  WeddingStorage,
+  WeddingModel,
+} from '..//models';
 import { computed, effect, inject, Signal } from '@angular/core';
 import { addTable } from './wedding-store-methods/updaters/add-table';
 import { removeTable } from './wedding-store-methods/updaters/remove-table';
@@ -10,7 +18,6 @@ import { moveGuestBetweenTables } from './wedding-store-methods/updaters/move-gu
 import { removeGuestFromTable } from './wedding-store-methods/updaters/remove-guest-from-table';
 import { moveGuestInList } from './wedding-store-methods/updaters/move-guest-in-list';
 import { importGuest } from './wedding-store-methods/updaters/import-guest';
-import { collectMedatada } from './wedding-store-methods/getters/collect-medatada';
 import { WeddingStorageService } from '../services/wedding-storage.service';
 
 export const WeddingStore = signalStore(
@@ -40,21 +47,17 @@ export const WeddingStore = signalStore(
     getTable(number: Signal<number | undefined>): Signal<Table | null> {
       return computed(() => state.tables().find((t) => t.number === number()) ?? null);
     },
-    getAllGuestMap() {
+    getAllGuestMap(): Map<string, Guest> {
       return new Map(state._allGuests());
+    },
+    getAllGuest(): Guest[] {
+      return [...state._allGuests().values()];
     },
     getGuest(guestId: Signal<string | null>): Signal<Guest | null> {
       return computed(() => {
         const id = guestId();
         return id ? (state._allGuests().get(id) ?? null) : null;
       });
-    },
-    collectMedatada(): Map<string, MetadataFieldConfig> {
-      const guestIds = state.guestIds();
-      const allGuests = state._allGuests();
-      const allGuestIds = [...allGuests.keys()];
-      const assignedGuests = allGuestIds.filter((id) => !guestIds.includes(id)).map((id) => allGuests.get(id)!);
-      return collectMedatada(assignedGuests);
     },
     addTable() {
       patchState(state, addTable);
@@ -92,6 +95,14 @@ export const WeddingStore = signalStore(
     },
     importGuests(summary: GuestImportSummaryModel) {
       patchState(state, (oldState) => importGuest(oldState, summary));
+    },
+    importBacklog(storage: WeddingStorage) {
+      const wedding: Wedding = new WeddingModel(storage);
+      patchState(state, () => wedding);
+    },
+    exportBacklog(): WeddingStorage {
+      const wedding: Wedding = getState(state);
+      return new WeddingStorageModel(wedding);
     },
   })),
   withHooks({

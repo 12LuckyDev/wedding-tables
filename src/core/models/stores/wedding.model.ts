@@ -1,7 +1,7 @@
 import { mappify, nMap } from '@12luckydev/utils';
 import { Guest } from '../guest.model';
 import { Table, TableModel } from '../table.model';
-import { WeddingStorageModel } from '../wedding-storage.model';
+import { WeddingStorageModel } from '../storage/wedding-storage.model';
 
 export interface Wedding {
   tables: Table[];

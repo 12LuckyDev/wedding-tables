@@ -1,6 +1,6 @@
-import { Guest } from './guest.model';
-import { Wedding } from './stores/wedding.model';
-import { Table } from './table.model';
+import { Guest } from '../guest.model';
+import { Wedding } from '../stores/wedding.model';
+import { Table } from '../table.model';
 
 export interface WeddingStorage {
   tables: Table[];

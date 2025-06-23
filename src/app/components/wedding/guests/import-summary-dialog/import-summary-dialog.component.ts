@@ -94,19 +94,17 @@ export class ImportSummaryDialogComponent extends DialogFormBaseComponent {
   }
 
   public override accept(): void {
-    const { groups, ...rest } = this.data.guestsToImport;
-    const result = {
-      ...rest,
-      groups: groups.map((group, i) => {
-        const control = this._formGroup.get(i.toString());
-        if (control) {
-          return { ...group, groupIds: [control.value] };
-        }
-        return group;
-      }),
-    };
+    const { groups } = this.data.guestsToImport;
 
-    this._weddingStore.importGuests(result);
+    this.data.guestsToImport.groups = groups.map((group, i) => {
+      const control = this._formGroup.get(i.toString());
+      if (control) {
+        return { ...group, groupIds: [control.value] };
+      }
+      return group;
+    });
+
+    this._weddingStore.importGuests(this.data.guestsToImport);
     this.close();
   }
 }

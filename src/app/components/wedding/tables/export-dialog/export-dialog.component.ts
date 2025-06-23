@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, Signal } from '@angular/core';
-import { WeddingExportStore, WeddingMetadataStore, WeddingStore } from '../../../../../core/stores';
+import { WeddingMetadataStore, WeddingStore } from '../../../../../core/stores';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +13,6 @@ import {
 } from '../../../../../core/models';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import { saveAs } from 'file-saver';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BooleanFormatterDialogComponent } from './boolean-formatter-dialog/boolean-formatter-dialog.component';
@@ -22,6 +21,7 @@ import { DialogService } from '../../../../../core/services/dialog.service';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CountersDialogComponent, CountersDialogData } from './counters-dialog/counters-dialog.component';
+import { ExportService } from '../../../../../core/services';
 
 @Component({
   selector: 'app-export-dialog',
@@ -37,15 +37,14 @@ import { CountersDialogComponent, CountersDialogData } from './counters-dialog/c
     MatBadgeModule,
     MatTooltipModule,
   ],
-  providers: [WeddingExportStore],
   templateUrl: './export-dialog.component.html',
   styleUrl: './export-dialog.component.scss',
 })
 export class ExportDialogComponent extends DialogFormBaseComponent {
   private readonly _weddingStore = inject(WeddingStore);
-  private readonly _weddingExportStore = inject(WeddingExportStore);
   private readonly _weddingMetadataStore = inject(WeddingMetadataStore);
   private readonly _dialogService = inject(DialogService);
+  private readonly _exportService = inject(ExportService);
 
   public readonly booleanFormatters: Signal<BooleanFormatter[]> = this._weddingMetadataStore.booleanFormatters;
   public readonly allGuestCount: Signal<number> = this._weddingStore.allGuestCount;
@@ -110,24 +109,12 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
   }
 
   private setMetaForm(): void {
-    this._metadataConfig = this._weddingStore.collectMedatada();
+    this._metadataConfig = this._exportService.collectMedatada();
     if (this._metadataConfig.size === 0) {
       return;
     }
 
-    const showMetadataControl = new FormControl(true);
-    const saveMetaConfigControl = new FormControl(false);
-    this.addControl('showMetadata', showMetadataControl);
-    this.addControl('saveMetaConfig', saveMetaConfigControl);
-
-    showMetadataControl.valueChanges.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((showMetadata) => {
-      if (showMetadata) {
-        saveMetaConfigControl.enable();
-      } else {
-        saveMetaConfigControl.setValue(false);
-        saveMetaConfigControl.disable();
-      }
-    });
+    this.addControl('showMetadata', new FormControl(true));
 
     const metaForm = new FormGroup({});
     this.addControl('meta', metaForm);
@@ -188,7 +175,7 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     }
 
     this._dialogService
-      .openSmall<{ formatterId: string | null }, string | null>(BooleanFormatterDialogComponent, {
+      .openMedium<{ formatterId: string | null }, string | null>(BooleanFormatterDialogComponent, {
         formatterId: formatterIdControl.value,
       })
       .pipe(takeUntilDestroyed(this._destroyRef))
@@ -204,8 +191,8 @@ export class ExportDialogComponent extends DialogFormBaseComponent {
     const { anonymize, showMetadata } = this._formGroup.getRawValue();
 
     const config: ExportConfig = { anonymize, showMetadata, metadataConfig: this._metadataConfig };
-    const content = this._weddingExportStore.exportTables(config);
-    saveAs(new Blob([content]), 'tables.txt');
+
+    this._exportService.exportTablesData(config);
     this.close();
   }
 }

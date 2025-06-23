@@ -33,7 +33,7 @@
                     [disabled]="!labelControl.value"
                     (click)="labelControl.setValue('')"
                   >
-                    <mat-icon>close</mat-icon>
+                    <mat-icon fontSet="material-symbols">close</mat-icon>
                   </button>
                 }
               </mat-form-field>
@@ -56,8 +56,8 @@
           <ng-container matColumnDef="options">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let i = index" [formGroupName]="i">
-              <button mat-icon-button aria-label="Delete button" matTooltip="Counters" (click)="delete(i)">
-                <mat-icon>delete</mat-icon>
+              <button mat-icon-button aria-label="Delete button" matTooltip="Delete" (click)="delete(i)">
+                <mat-icon fontSet="material-symbols">delete</mat-icon>
               </button>
             </mat-cell>
           </ng-container>
@@ -68,7 +68,7 @@
 
         <button class="add-counter-button" matButton="filled" aria-label="Add button" (click)="add()">
           Add new
-          <mat-icon>add</mat-icon>
+          <mat-icon fontSet="material-symbols">add</mat-icon>
         </button>
       </mat-card-content>
     </mat-card>

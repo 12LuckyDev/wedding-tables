@@ -1,18 +1,27 @@
-<!-- <div class="table-container" cdkDragBoundary=".tables-container" cdkDrag> -->
 <div class="table-container">
   <div class="table" [style]="tableColor()">
-    {{ tableNumber() }}
+    <div class="table-cloth">
+      {{ tableNumber() }}
 
-    <div>
-      <button matIconButton aria-label="Remove chair button" (click)="odRemoveChair()">
-        <mat-icon>remove</mat-icon>
-      </button>
-      <button matIconButton aria-label="Add table button" class="danger-button" (click)="onDeleteTable()">
-        <mat-icon>delete</mat-icon>
-      </button>
-      <button matIconButton aria-label="Add chair button" (click)="onAddChair()">
-        <mat-icon>add</mat-icon>
-      </button>
+      <div>
+        <button matIconButton aria-label="Remove chair button" (click)="odRemoveChair()" matTooltip="Remove chair">
+          <mat-icon fontSet="material-symbols">remove</mat-icon>
+        </button>
+        <button
+          matIconButton
+          aria-label="Add table button"
+          class="danger-button"
+          (click)="onDeleteTable()"
+          matTooltip="Delete table"
+        >
+          <mat-icon fontSet="material-symbols">delete</mat-icon>
+        </button>
+        <button matIconButton aria-label="Add chair button" (click)="onAddChair()" matTooltip="Add chair">
+          <mat-icon fontSet="material-symbols">add</mat-icon>
+        </button>
+      </div>
+
+      {{ tableStats() }}
     </div>
   </div>
 

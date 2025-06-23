@@ -1,7 +1,11 @@
+export * from './storage/wedding-metadata-storage.model';
+export * from './storage/wedding-storage.model';
+
 export * from './stores/wedding-drag-data.model';
 export * from './stores/wedding-metadata.model';
 export * from './stores/wedding.model';
 
+export * from './backlog.model';
 export * from './boolean-formatter.model';
 export * from './color.model';
 export * from './export-config.model';
@@ -16,4 +20,4 @@ export * from './metadata.type';
 export * from './read-guests-file-error.enum';
 export * from './read-guests-file-result.model';
 export * from './table.model';
-export * from './wedding-storage.model';
+

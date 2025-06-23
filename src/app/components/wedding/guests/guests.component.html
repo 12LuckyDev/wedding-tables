@@ -3,15 +3,29 @@
 
   <span class="toolbar-spacer"></span>
 
-  <button matIconButton aria-label="Add quests button" class="add-button" (click)="onAddQuests()">
-    <mat-icon>add</mat-icon>
+  <button
+    matIconButton
+    aria-label="Add quests button"
+    class="add-button"
+    (click)="onAddQuests()"
+    matTooltip="Add guest"
+  >
+    <mat-icon fontSet="material-symbols">add</mat-icon>
   </button>
 
-  <button matIconButton aria-label="Import quests button" (click)="file.click()">
-    <mat-icon>upload_file</mat-icon>
+  <button matIconButton aria-label="Import quests button" [matMenuTriggerFor]="menu" matTooltip="Import guests">
+    <mat-icon fontSet="material-symbols">upload_file</mat-icon>
   </button>
-
-  <input #file type="file" style="display: none" (change)="onImportQuests(file)" />
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item aria-label="Import and add button" (click)="onImportQuests(false)">
+      <mat-icon fontSet="material-symbols">person_add</mat-icon>
+      <span>Import and add</span>
+    </button>
+    <button mat-menu-item aria-label="Import and replace button" (click)="onImportQuests(true)">
+      <mat-icon fontSet="material-symbols">person_alert</mat-icon>
+      <span>Import and replace</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 
 <app-guests-list />

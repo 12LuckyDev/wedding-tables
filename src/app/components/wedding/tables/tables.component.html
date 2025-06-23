@@ -1,14 +1,28 @@
 <mat-toolbar class="tables-toolbar">
   <span>Tables: {{ count() }}</span>
 
-  <button matIconButton aria-label="Add table button" class="add-button" (click)="onAddTable()">
-    <mat-icon>add</mat-icon>
+  <button matIconButton aria-label="Add table button" class="add-button" (click)="onAddTable()" matTooltip="Add table">
+    <mat-icon fontSet="material-symbols">add</mat-icon>
   </button>
 
   <span class="toolbar-spacer"></span>
 
-  <button matIconButton aria-label="Export data button" (click)="onExport()">
-    <mat-icon>download</mat-icon>
+  <button matIconButton aria-label="Export data button" [matMenuTriggerFor]="menu" matTooltip="Backlog">
+    <mat-icon fontSet="material-symbols">file_save</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item aria-label="Export backlog file button" (click)="onExportBacklog()">
+      <mat-icon fontSet="material-symbols">file_export</mat-icon>
+      <span>Export backlog file</span>
+    </button>
+    <button mat-menu-item aria-label="Import backlog file button" (click)="onImportBacklog()">
+      <mat-icon fontSet="material-symbols">file_open</mat-icon>
+      <span>Import backlog file</span>
+    </button>
+  </mat-menu>
+
+  <button matIconButton aria-label="Export data button" (click)="onExport()" matTooltip="Export">
+    <mat-icon fontSet="material-symbols">download</mat-icon>
   </button>
 </mat-toolbar>
 

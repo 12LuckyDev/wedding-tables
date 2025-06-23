@@ -43,12 +43,28 @@
   --table-size: calc(var(--chair-size) * var(--table-size-multi));
   height: var(--table-size);
   width: var(--table-size);
+
   border: solid 1px #ccc;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  .table-cloth {
+    --cloth-size: calc(var(--table-size) * 0.6);
+    height: var(--cloth-size);
+    width: var(--cloth-size);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px #ccc;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #000000;
+  }
 }
 
 .chair-wrapper {

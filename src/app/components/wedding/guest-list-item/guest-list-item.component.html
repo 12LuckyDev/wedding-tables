@@ -1,6 +1,8 @@
 @if (guest(); as existingGuest) {
   <div class="guest-item" [style]="existingGuest.color">
-    <mat-icon aria-hidden="false" aria-label="Person icon" class="item-icon">person</mat-icon>
+    <mat-icon fontSet="material-symbols" aria-hidden="false" aria-label="Person icon" class="item-icon"
+      >person</mat-icon
+    >
     {{ existingGuest.name }}
   </div>
 }

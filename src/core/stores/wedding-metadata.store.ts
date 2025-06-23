@@ -1,18 +1,19 @@
 import { editByProp, removeByProp } from '@12luckydev/utils';
-import { computed } from '@angular/core';
-import { signalStore, withState, withMethods, patchState, withComputed } from '@ngrx/signals';
+import { computed, effect, inject } from '@angular/core';
+import { signalStore, withState, withMethods, patchState, withComputed, withHooks, getState } from '@ngrx/signals';
 import { v4 as uuidv4 } from 'uuid';
-import { BooleanFormatter, WeddingMetadata } from '../models';
+import {
+  BooleanFormatter,
+  WeddingMetadata,
+  WeddingMetadataModel,
+  WeddingMetadataStorage,
+  WeddingMetadataStorageModel,
+} from '../models';
+import { WeddingStorageService } from '../services';
 
 export const WeddingMetadataStore = signalStore(
   { providedIn: 'root' },
-  withState<WeddingMetadata>({
-    _booleanFormatters: [
-      { id: 'YES_NO', editable: false, trueLabel: 'Yes', falseLabel: 'No' },
-      { id: 'TRUE_FALSE', editable: false, trueLabel: 'True', falseLabel: 'False' },
-    ],
-    _customBooleanFormatters: [{ id: uuidv4(), editable: true, trueLabel: '1', falseLabel: '0' }],
-  }),
+  withState<WeddingMetadata>(() => inject(WeddingStorageService).getWeddingMetadataConfig()),
   withComputed(({ _booleanFormatters, _customBooleanFormatters }) => ({
     booleanFormatters: computed((): BooleanFormatter[] => {
       return [..._booleanFormatters(), ..._customBooleanFormatters()];
@@ -53,5 +54,27 @@ export const WeddingMetadataStore = signalStore(
         }),
       );
     },
+    importBacklog(storage: WeddingMetadataStorage) {
+      const weddingMetadata: WeddingMetadata = new WeddingMetadataModel(storage);
+      patchState(state, () => weddingMetadata);
+    },
+    exportBacklog(): WeddingMetadataStorage {
+      const weddingMetadata: WeddingMetadata = getState(state);
+      return new WeddingMetadataStorageModel(weddingMetadata);
+    },
   })),
+  withHooks({
+    onInit(store) {
+      const weddingStorageService = inject(WeddingStorageService);
+      let initialRun = true;
+
+      effect(() => {
+        const state: WeddingMetadata = getState(store);
+        if (!initialRun) {
+          weddingStorageService.setWeddingMetadataConfig(state);
+        }
+        initialRun = false;
+      });
+    },
+  }),
 );
