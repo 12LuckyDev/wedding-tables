@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { WeddingMetadataStore, WeddingStore } from '../stores';
-import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver-es';
 import selectFiles from 'select-files';
 import { readFileContent } from '../helpers/guests-import/read-file-content';
 import { Backlog, WeddingMetadataStorage, WeddingStorage } from '../models';

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { WeddingMetadataStore, WeddingStore } from '../../stores';
 import { buildExportedContent } from './build-exported-content';
 import { ExportConfig, MetadataField, MetadataFieldConfig, MetadataFieldConfigModel } from '../../models';
-import saveAs from 'file-saver';
+import { saveAs } from 'file-saver-es';
 
 @Injectable({ providedIn: 'root' })
 export class ExportService {
