@@ -4,7 +4,6 @@
   [cdkDropListData]="guestId()"
   (cdkDropListDropped)="drop($event)"
   (cdkDropListEntered)="dropListEntered()"
-  [cdkDropListEnterPredicate]="dropPredicate"
 >
   @if (guest(); as existingGuest) {
     <app-guest-chair-item

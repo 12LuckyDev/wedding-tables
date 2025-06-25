@@ -36,10 +36,6 @@ export class ChairComponent extends DragParentComponent {
     return false;
   }
 
-  public dropPredicate(_drag: unknown, drop: CdkDropList): boolean {
-    return drop.data === null;
-  }
-
   public drop({ item }: CdkDragDrop<string | null, Guest[] | string, GuestDragData>): void {
     const tableNumber = this.tableNumber() ?? null;
     const chairIndex = this.chairIndex() ?? null;

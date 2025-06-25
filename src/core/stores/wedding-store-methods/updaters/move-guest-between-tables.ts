@@ -16,6 +16,8 @@ export const moveGuestBetweenTables = (
   const { tables: oldTables } = oldState;
 
   const tablesAfterAdd = changeGuestAtTable(oldTables, id, tableNumber, chairIndex);
-  const tablesAfterRemove = changeGuestAtTable(tablesAfterAdd, null, previousTableNumber, previousChairIndex);
+  const oldGuestId = oldTables.find(({ number }) => number === tableNumber)?.chairs?.[chairIndex] ?? null;
+  const tablesAfterRemove = changeGuestAtTable(tablesAfterAdd, oldGuestId, previousTableNumber, previousChairIndex);
+
   return { ...oldState, tables: tablesAfterRemove };
 };
