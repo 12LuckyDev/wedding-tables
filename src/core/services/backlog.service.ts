@@ -29,7 +29,6 @@ export class BacklogService {
 
     try {
       const content = await readFileContent(file);
-      console.log(content);
       // TODO validate format
       const { wedding, weddingMetadata }: Backlog = JSON.parse(content);
       this._weddingMetadataStore.importBacklog(weddingMetadata);
