@@ -22,7 +22,7 @@ export const buildCountersText = (
           return;
         }
         const value = metadata[key];
-        if (values.length === 0 || values.includes(value)) {
+        if (value !== undefined && (values.length === 0 || values.includes(value))) {
           count.set(value, (count.get(value) ?? 0) + 1);
         }
       });

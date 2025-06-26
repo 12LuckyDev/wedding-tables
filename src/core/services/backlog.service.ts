@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { WeddingMetadataStore, WeddingStore } from '../stores';
-import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver-es';
 import selectFiles from 'select-files';
 import { readFileContent } from '../helpers/guests-import/read-file-content';
 import { Backlog, WeddingMetadataStorage, WeddingStorage } from '../models';
@@ -29,7 +29,6 @@ export class BacklogService {
 
     try {
       const content = await readFileContent(file);
-      console.log(content);
       // TODO validate format
       const { wedding, weddingMetadata }: Backlog = JSON.parse(content);
       this._weddingMetadataStore.importBacklog(weddingMetadata);
