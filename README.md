@@ -16,24 +16,24 @@ A simple application that helps seat wedding guests at round tables.
 
 Guests can be imported from a txt file, with each row being a new group. Guests within a group are separated by the "," character.
 
-```json
+```js
 Name Surname // guest without a group
 Name Surname, Name Surname //two guests in group
 ```
 
 If guests are to be imported with metadata, a json file must be imported.
 
-```json
+```js
 [
-  "Name Surname", // guest without a group
-  ["Name Surname", "Name Surname"], //two guests in group
-  { "name": "Name Surname" }, // guest without a group
+  'Name Surname', // guest without a group
+  ['Name Surname', 'Name Surname'], //two guests in group
+  { name: 'Name Surname' }, // guest without a group
   {
-    "name": "Name Surname",
-    "metadata": { "keyString": "string value", "keyNumber": 123, "keyBoolean": true }
+    name: 'Name Surname',
+    metadata: { keyString: 'string value', keyNumber: 123, keyBoolean: true },
   }, // guest without a group, but with metadata
-  [{ "name": "Name Surname" }, { "name": "Name Surname" }] //two guests in group
-]
+  [{ name: 'Name Surname' }, { name: 'Name Surname' }], //two guests in group
+];
 ```
 
 ### Used libraries
